@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Syncopate", sans-serif;
+  
+  --color-bugatti-blue: #0066FF;
+  --color-midnight: #0a0a0a;
+  --color-carbon: #161b22;
+}
+
+@layer base {
+  body {
+    @apply bg-midnight text-slate-200 font-sans antialiased;
+  }
+}
+
+.auth-aurora {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0, 102, 255, 0.18), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 50%, rgba(139, 92, 246, 0.08), transparent),
+    radial-gradient(ellipse 50% 30% at 0% 80%, rgba(59, 130, 246, 0.1), transparent);
+}
+
+.sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 102, 255, 0.35) transparent;
+}
+
+.sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 102, 255, 0.35);
+  border-radius: 10px;
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-carbon/80 backdrop-blur-2xl border border-white/[0.06] shadow-[0_8px_40px_rgba(0,0,0,0.45)];
+  }
+  
+  .bugatti-gradient {
+    @apply bg-gradient-to-br from-blue-600 to-blue-900;
+  }
+  
+  .header-font {
+    @apply font-display uppercase tracking-wider;
+  }
+  
+  .btn-primary {
+    @apply px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl transition-all active:scale-95 shadow-[0_0_20px_rgba(0,102,255,0.3)];
+  }
+  
+  .btn-secondary {
+    @apply px-6 py-3 bg-white/5 hover:bg-white/10 text-white font-bold rounded-2xl border border-white/10 transition-all active:scale-95;
+  }
+  
+  .input-field {
+    @apply w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:border-blue-500/50 transition-all placeholder:text-slate-600;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #222;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #0066FF;
+}
+
+/* Animations */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Лёгкий «объём» для карточек без WebGL */
+.card-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease, border-color 0.3s ease;
+  will-change: transform;
+}
+.card-3d:hover {
+  transform: perspective(1200px) rotateX(4deg) rotateY(-5deg) translateY(-2px);
+  box-shadow: 0 24px 50px rgba(0, 102, 255, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-3d:hover {
+    transform: none;
+  }
+}

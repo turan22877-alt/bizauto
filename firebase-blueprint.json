@@ -1,0 +1,104 @@
+{
+  "entities": {
+    "users": {
+      "title": "User Profile",
+      "description": "Stores user profile information and roles.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["master", "staff"] },
+        "businessName": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["uid", "email", "role", "createdAt"]
+    },
+    "clients": {
+      "title": "Client",
+      "description": "Stores client information.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "visits": { "type": "number" },
+        "totalSpent": { "type": "number" },
+        "points": { "type": "number" },
+        "status": { "type": "string" },
+        "lastVisit": { "type": "string" },
+        "ownerUid": { "type": "string" }
+      },
+      "required": ["id", "name", "ownerUid"]
+    },
+    "staff": {
+      "title": "Staff Member",
+      "description": "Stores staff information.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "role": { "type": "string" },
+        "specialization": { "type": "string" },
+        "ownerUid": { "type": "string" }
+      },
+      "required": ["id", "name", "ownerUid"]
+    },
+    "appointments": {
+      "title": "Appointment",
+      "description": "Stores appointment information.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "clientId": { "type": "string" },
+        "clientName": { "type": "string" },
+        "staffId": { "type": "string" },
+        "service": { "type": "string" },
+        "startTime": { "type": "string" },
+        "date": { "type": "string" },
+        "duration": { "type": "number" },
+        "status": { "type": "string" },
+        "price": { "type": "number" },
+        "ownerUid": { "type": "string" }
+      },
+      "required": ["id", "clientId", "staffId", "date", "ownerUid"]
+    },
+    "inventory": {
+      "title": "Inventory Item",
+      "description": "Stores inventory information.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "stock": { "type": "number" },
+        "price": { "type": "number" },
+        "category": { "type": "string" },
+        "ownerUid": { "type": "string" }
+      },
+      "required": ["id", "name", "ownerUid"]
+    }
+  },
+  "firestore": {
+    "/users/{uid}": {
+      "schema": "users",
+      "description": "User profiles collection."
+    },
+    "/clients/{clientId}": {
+      "schema": "clients",
+      "description": "Clients collection."
+    },
+    "/staff/{staffId}": {
+      "schema": "staff",
+      "description": "Staff collection."
+    },
+    "/appointments/{appointmentId}": {
+      "schema": "appointments",
+      "description": "Appointments collection."
+    },
+    "/inventory/{itemId}": {
+      "schema": "inventory",
+      "description": "Inventory collection."
+    }
+  }
+}
