@@ -37,17 +37,17 @@ const Header: React.FC<HeaderProps> = ({
   pendingAppointmentsCount,
 }) => {
   const titles: Record<AppSection, string> = {
-    [AppSection.DASHBOARD]: 'DASHBOARD',
-    [AppSection.BOOKING_JOURNAL]: 'MISSION CONTROL',
-    [AppSection.CLIENTS]: 'CLIENT RELATIONS',
-    [AppSection.STAFF]: 'ENGINEERING TEAM',
-    [AppSection.INVENTORY]: 'INVENTORY HUB',
-    [AppSection.FINANCE]: 'FINANCIAL VAULT',
-    [AppSection.ANALYTICS]: 'TELEMETRY DATA',
-    [AppSection.LOYALTY]: 'ROYAL PASS',
-    [AppSection.PAYROLL]: 'PAYROLL SYSTEM',
-    [AppSection.NOTIFICATIONS]: 'COMMS CENTER',
-    [AppSection.INTEGRATIONS]: 'LINK SYSTEM',
+    [AppSection.DASHBOARD]: 'Обзор',
+    [AppSection.BOOKING_JOURNAL]: 'Журнал записей',
+    [AppSection.CLIENTS]: 'Клиенты',
+    [AppSection.STAFF]: 'Команда',
+    [AppSection.INVENTORY]: 'Склад',
+    [AppSection.FINANCE]: 'Финансы',
+    [AppSection.ANALYTICS]: 'Аналитика',
+    [AppSection.LOYALTY]: 'Лояльность',
+    [AppSection.PAYROLL]: 'Зарплаты',
+    [AppSection.NOTIFICATIONS]: 'Центр связи',
+    [AppSection.INTEGRATIONS]: 'Интеграции',
   };
 
   const initials = user.displayName
@@ -121,64 +121,58 @@ const Header: React.FC<HeaderProps> = ({
 
   const iconFor = (h: Hit) => {
     switch (h.kind) {
-      case 'client':
-        return <Users size={14} />;
-      case 'staff':
-        return <UserCog size={14} />;
-      case 'product':
-        return <Package size={14} />;
-      default:
-        return <Calendar size={14} />;
+      case 'client': return <Users size={14} />;
+      case 'staff': return <UserCog size={14} />;
+      case 'product': return <Package size={14} />;
+      default: return <Calendar size={14} />;
     }
   };
 
   return (
-    <header className="h-[4.5rem] md:h-24 bg-[#06060a]/88 backdrop-blur-xl border-b border-white/[0.06] flex items-center justify-between px-4 md:px-10 sticky top-0 z-40">
+    <header className="h-16 bg-white border-b border-stone-200 flex items-center justify-between px-4 md:px-8 sticky top-0 z-40 shadow-sm">
       <div className="flex flex-col min-w-0 flex-1 pr-2">
-        <h2 className="header-font text-[10px] md:text-xs font-black text-blue-500 tracking-[0.2em] md:tracking-[0.35em] mb-0.5 truncate">
+        <h2 className="text-sm font-bold text-stone-800 truncate">
           {titles[activeSection]}
         </h2>
-        <p className="text-[10px] md:text-xs text-slate-500 font-bold truncate">
-          {user.businessName || 'BizAuto'} · личный кабинет
+        <p className="text-xs text-stone-400 truncate">
+          {user.businessName || 'BizAuto'}
         </p>
       </div>
 
-      <div className="flex items-center gap-2 md:gap-6 shrink-0">
+      <div className="flex items-center gap-3 shrink-0">
+        {/* Search */}
         <div ref={searchRef} className="relative group hidden md:block">
           <Search
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-blue-500 transition-colors z-10"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-green-600 transition-colors z-10"
             size={16}
           />
           <input
             type="search"
             value={q}
-            onChange={(e) => {
-              setQ(e.target.value);
-              setSearchOpen(true);
-            }}
+            onChange={(e) => { setQ(e.target.value); setSearchOpen(true); }}
             onFocus={() => setSearchOpen(true)}
-            placeholder="Глобальный поиск..."
-            className="pl-12 pr-4 py-3 bg-white/[0.04] border border-white/10 rounded-2xl text-xs font-bold focus:outline-none focus:border-blue-500/50 w-56 lg:w-72 transition-all placeholder:text-slate-700"
+            placeholder="Поиск..."
+            className="pl-10 pr-4 py-2 bg-stone-50 border border-stone-200 rounded-lg text-sm focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100 w-56 lg:w-72 transition-all placeholder:text-stone-400 text-stone-700"
             autoComplete="off"
           />
           {searchOpen && q.trim().length > 0 && (
-            <div className="absolute top-full left-0 right-0 mt-2 py-2 rounded-2xl border border-white/10 bg-[#0e1018]/95 backdrop-blur-xl shadow-2xl z-[60] max-h-80 overflow-y-auto">
+            <div className="absolute top-full left-0 right-0 mt-2 py-1 rounded-lg border border-stone-200 bg-white shadow-lg z-[60] max-h-80 overflow-y-auto">
               {hits.length === 0 ? (
-                <p className="px-4 py-6 text-xs text-slate-500 text-center">Ничего не найдено</p>
+                <p className="px-4 py-4 text-xs text-stone-400 text-center">Ничего не найдено</p>
               ) : (
                 hits.map((h) => (
                   <button
                     key={`${h.kind}-${h.id}`}
                     type="button"
                     onClick={() => pickHit(h)}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-white/5 transition-colors border-b border-white/5 last:border-0"
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-green-50 transition-colors border-b border-stone-100 last:border-0"
                   >
-                    <span className="text-blue-500 shrink-0">{iconFor(h)}</span>
+                    <span className="text-green-600 shrink-0">{iconFor(h)}</span>
                     <span className="min-w-0 flex-1">
-                      <span className="block text-xs font-bold text-white truncate">{h.title}</span>
-                      <span className="block text-[10px] text-slate-500 truncate">{h.sub}</span>
+                      <span className="block text-xs font-medium text-stone-700 truncate">{h.title}</span>
+                      <span className="block text-[10px] text-stone-400 truncate">{h.sub}</span>
                     </span>
-                    <ChevronRight size={14} className="text-slate-600 shrink-0" />
+                    <ChevronRight size={14} className="text-stone-300 shrink-0" />
                   </button>
                 ))
               )}
@@ -186,53 +180,53 @@ const Header: React.FC<HeaderProps> = ({
           )}
         </div>
 
-        <div className="flex items-center gap-0.5 md:gap-1">
-          <button
-            type="button"
-            onClick={() => onNavigate(AppSection.BOOKING_JOURNAL)}
-            className="p-2.5 md:p-3 text-slate-500 hover:text-white transition-colors relative rounded-xl hover:bg-white/5"
-            aria-label="Записи"
-            title={pendingAppointmentsCount ? `${pendingAppointmentsCount} в ожидании` : 'Журнал'}
-          >
-            <Bell size={20} />
-            {pendingAppointmentsCount > 0 && (
-              <span className="absolute top-2 right-2 min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full bg-blue-600 text-[10px] font-black text-white">
-                {pendingAppointmentsCount > 9 ? '9+' : pendingAppointmentsCount}
-              </span>
-            )}
-          </button>
-          <button
-            type="button"
-            onClick={onOpenSettings}
-            className="p-2.5 md:p-3 text-slate-500 hover:text-white transition-colors rounded-xl hover:bg-white/5 hidden sm:block"
-            aria-label="Настройки"
-          >
-            <Settings size={20} />
-          </button>
-        </div>
+        {/* Notification bell */}
+        <button
+          type="button"
+          onClick={() => onNavigate(AppSection.BOOKING_JOURNAL)}
+          className="p-2 text-stone-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all relative"
+          aria-label="Записи"
+        >
+          <Bell size={20} />
+          {pendingAppointmentsCount > 0 && (
+            <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full bg-green-600 text-[10px] font-bold text-white">
+              {pendingAppointmentsCount > 9 ? '9+' : pendingAppointmentsCount}
+            </span>
+          )}
+        </button>
 
-        <div className="w-px h-8 bg-white/10 mx-0 md:mx-1 hidden sm:block" />
+        {/* Settings */}
+        <button
+          type="button"
+          onClick={onOpenSettings}
+          className="p-2 text-stone-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all hidden sm:block"
+          aria-label="Настройки"
+        >
+          <Settings size={20} />
+        </button>
 
-        <div className="flex items-center gap-2 md:gap-3">
+        {/* Divider */}
+        <div className="w-px h-8 bg-stone-200 hidden sm:block" />
+
+        {/* User */}
+        <div className="flex items-center gap-3">
           <div className="text-right hidden sm:block">
-            <p className="text-xs font-black text-white uppercase tracking-tighter truncate max-w-[120px] lg:max-w-[140px]">
+            <p className="text-xs font-bold text-stone-700 truncate max-w-[120px]">
               {user.displayName}
             </p>
-            <p className="text-[10px] text-blue-500 font-bold uppercase truncate max-w-[120px] lg:max-w-[140px]">{user.email}</p>
+            <p className="text-[10px] text-stone-400 truncate max-w-[120px]">{user.email}</p>
           </div>
-          <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bugatti-gradient p-[2px] shrink-0 shadow-[0_0_24px_rgba(0,102,255,0.25)]">
-            <div className="w-full h-full bg-[#06060a] rounded-[14px] flex items-center justify-center font-black text-blue-400 text-xs md:text-sm">
-              {initials}
-            </div>
+          <div className="w-9 h-9 rounded-lg bugatti-gradient flex items-center justify-center font-bold text-white text-xs shrink-0">
+            {initials}
           </div>
           <button
             type="button"
             onClick={onLogout}
-            className="p-2 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all"
+            className="p-2 text-stone-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
             title="Выйти"
             aria-label="Выйти"
           >
-            <LogOut size={20} />
+            <LogOut size={18} />
           </button>
         </div>
       </div>

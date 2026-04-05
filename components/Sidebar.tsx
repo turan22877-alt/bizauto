@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   LayoutDashboard,
   Calendar,
@@ -11,6 +11,11 @@ import {
   Gift,
   Bell,
   Layers,
+  ChevronLeft,
+  ChevronRight,
+  Zap,
+  Shield,
+  TrendingUp,
 } from 'lucide-react';
 import { AppSection } from '../types';
 
@@ -18,63 +23,170 @@ interface SidebarProps {
   activeSection: AppSection;
   onSectionChange: (section: AppSection) => void;
   businessName?: string;
+  pendingAppointmentsCount?: number;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange, businessName }) => {
-  const menu = [
-    { id: AppSection.DASHBOARD, label: 'Обзор', icon: LayoutDashboard },
-    { id: AppSection.BOOKING_JOURNAL, label: 'Журнал', icon: Calendar },
-    { id: AppSection.CLIENTS, label: 'Клиенты', icon: Users },
-    { id: AppSection.STAFF, label: 'Команда', icon: UserCog },
-    { id: AppSection.INVENTORY, label: 'Склад', icon: Package },
-    { id: AppSection.FINANCE, label: 'Финансы', icon: Wallet },
-    { id: AppSection.ANALYTICS, label: 'Аналитика', icon: BarChart },
-    { id: AppSection.PAYROLL, label: 'Зарплаты', icon: Layers },
-    { id: AppSection.LOYALTY, label: 'Лояльность', icon: Gift },
-    { id: AppSection.NOTIFICATIONS, label: 'Центр связи', icon: Bell },
+type MenuGroup = {
+  label: string;
+  icon: React.FC<{ size?: number; strokeWidth?: number }>;
+  items: { id: AppSection; label: string; icon: React.FC<{ size?: number; strokeWidth?: number }>; badge?: number }[];
+};
+
+const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange, businessName, pendingAppointmentsCount = 0 }) => {
+  const [collapsed, setCollapsed] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+
+  const menuGroups: MenuGroup[] = [
+    {
+      label: 'Основное',
+      icon: Zap,
+      items: [
+        { id: AppSection.DASHBOARD, label: 'Обзор', icon: LayoutDashboard },
+        { id: AppSection.BOOKING_JOURNAL, label: 'Журнал записей', icon: Calendar, badge: pendingAppointmentsCount || undefined },
+      ],
+    },
+    {
+      label: 'Управление',
+      icon: Shield,
+      items: [
+        { id: AppSection.CLIENTS, label: 'Клиенты', icon: Users },
+        { id: AppSection.STAFF, label: 'Команда', icon: UserCog },
+        { id: AppSection.INVENTORY, label: 'Склад', icon: Package },
+        { id: AppSection.LOYALTY, label: 'Лояльность', icon: Gift },
+      ],
+    },
+    {
+      label: 'Аналитика',
+      icon: TrendingUp,
+      items: [
+        { id: AppSection.FINANCE, label: 'Финансы', icon: Wallet },
+        { id: AppSection.ANALYTICS, label: 'Аналитика', icon: BarChart },
+        { id: AppSection.PAYROLL, label: 'Зарплаты', icon: Layers },
+        { id: AppSection.NOTIFICATIONS, label: 'Центр связи', icon: Bell },
+      ],
+    },
   ];
 
   return (
-    <aside className="w-64 lg:w-72 bg-[#0c0c10] border-r border-white/[0.06] flex flex-col sticky top-0 h-screen z-50 shadow-[4px_0_40px_rgba(0,0,0,0.35)]">
-      <div className="p-6 lg:p-10 flex flex-col h-full min-h-0">
-        <div className="flex flex-col gap-1 mb-8 lg:mb-12 shrink-0">
-          <h1 className="header-font text-xl lg:text-2xl font-black text-white tracking-tighter flex items-center gap-2">
-            <span className="w-8 h-8 bugatti-gradient rounded-xl flex items-center justify-center text-xs shadow-lg shadow-blue-900/30">
-              B
-            </span>
-            BIZAUTO
-          </h1>
-          <p className="text-[10px] font-bold text-blue-500/90 uppercase tracking-[0.25em] line-clamp-2">
-            {businessName || 'Управление сервисом'}
-          </p>
+    <aside
+      className={`bg-stone-900 border-r border-stone-700/50 flex flex-col sticky top-0 h-screen z-50 transition-all duration-300 ${
+        collapsed ? 'w-[76px]' : 'w-72'
+      }`}
+    >
+      <div className="flex flex-col h-full min-h-0 p-5">
+        {/* Logo */}
+        <div className={`flex items-center gap-3 mb-6 shrink-0 ${collapsed ? 'justify-center' : ''}`}>
+          <div className="w-10 h-10 bugatti-gradient rounded-lg flex items-center justify-center text-sm font-black text-white shrink-0">
+            B
+          </div>
+          {!collapsed && (
+            <div className="flex flex-col min-w-0 overflow-hidden">
+              <h1 className="header-font text-sm font-black text-white tracking-tight truncate">BIZAUTO</h1>
+              <p className="text-[10px] font-semibold text-green-400/80 uppercase tracking-wider truncate">
+                {businessName || 'Управление сервисом'}
+              </p>
+            </div>
+          )}
         </div>
 
-        <nav className="space-y-1.5 overflow-y-auto flex-1 min-h-0 pr-1 sidebar-scroll">
-          {menu.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => onSectionChange(item.id)}
-              className={`w-full flex items-center gap-3 lg:gap-4 px-4 lg:px-5 py-3.5 rounded-2xl text-xs lg:text-sm font-semibold transition-all duration-300 ${
-                activeSection === item.id
-                  ? 'bg-blue-600 text-white shadow-[0_0_28px_rgba(0,102,255,0.35)] border border-blue-400/20'
-                  : 'text-slate-500 hover:text-white hover:bg-white/[0.04] border border-transparent'
-              }`}
-            >
-              <item.icon size={20} strokeWidth={activeSection === item.id ? 2.5 : 2} />
-              {item.label}
-            </button>
+        {/* Collapse toggle */}
+        <button
+          type="button"
+          onClick={() => setCollapsed(!collapsed)}
+          className={`mb-4 rounded-lg border border-stone-700 text-stone-400 hover:text-white hover:bg-stone-800 transition-all ${
+            collapsed ? 'mx-auto w-10 h-10 flex items-center justify-center' : 'w-full flex items-center justify-end p-2'
+          }`}
+          aria-label={collapsed ? 'Развернуть' : 'Свернуть'}
+        >
+          {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+        </button>
+
+        {/* Navigation */}
+        <nav className="space-y-5 overflow-y-auto flex-1 min-h-0 pr-1 sidebar-scroll">
+          {menuGroups.map((group) => (
+            <div key={group.label}>
+              {/* Group label */}
+              {!collapsed && (
+                <div className="flex items-center gap-2 mb-2 px-3">
+                  <group.icon size={12} className="text-stone-500" />
+                  <span className="text-[10px] font-bold text-stone-500 uppercase tracking-widest">{group.label}</span>
+                </div>
+              )}
+
+              {/* Group items */}
+              <div className="space-y-1">
+                {group.items.map((item) => {
+                  const isActive = activeSection === item.id;
+                  const isHovered = hoveredItem === item.id;
+
+                  return (
+                    <div
+                      key={item.id}
+                      className="relative"
+                      onMouseEnter={() => setHoveredItem(item.id)}
+                      onMouseLeave={() => setHoveredItem(null)}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => onSectionChange(item.id)}
+                        className={`w-full flex items-center gap-3 rounded-lg text-sm font-medium transition-all relative overflow-hidden ${
+                          collapsed ? 'justify-center p-2.5' : 'px-3 py-2.5'
+                        } ${
+                          isActive
+                            ? 'bg-green-600 text-white shadow-lg'
+                            : 'text-stone-400 hover:text-white hover:bg-stone-800'
+                        }`}
+                      >
+                        <item.icon
+                          size={20}
+                          strokeWidth={isActive ? 2.5 : 1.8}
+                          className={`shrink-0 ${isActive ? 'text-white' : ''}`}
+                        />
+
+                        {!collapsed && (
+                          <>
+                            <span className="truncate">{item.label}</span>
+                            {item.badge && item.badge > 0 && (
+                              <span className="ml-auto min-w-[20px] h-5 px-1.5 flex items-center justify-center rounded-full bg-green-500 text-[10px] font-bold text-white">
+                                {item.badge > 9 ? '9+' : item.badge}
+                              </span>
+                            )}
+                          </>
+                        )}
+
+                        {collapsed && item.badge && item.badge > 0 && (
+                          <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full" />
+                        )}
+                      </button>
+
+                      {/* Tooltip when collapsed */}
+                      {collapsed && isHovered && (
+                        <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 bg-stone-800 border border-stone-700 rounded-lg shadow-xl z-[100] whitespace-nowrap pointer-events-none">
+                          <span className="text-xs font-medium text-white">{item.label}</span>
+                          <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-stone-800" />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Separator */}
+              {!collapsed && <div className="h-px bg-stone-800 my-3 mx-3" />}
+            </div>
           ))}
         </nav>
 
-        <div className="mt-6 pt-6 border-t border-white/[0.06] shrink-0">
-          <div className="p-4 lg:p-5 glass-panel rounded-2xl lg:rounded-3xl border border-white/10">
-            <p className="text-[10px] font-bold text-slate-500 uppercase mb-2">Статус</p>
+        {/* Status footer */}
+        <div className={`mt-4 pt-4 border-t border-stone-800 shrink-0 ${collapsed ? 'flex justify-center' : ''}`}>
+          {collapsed ? (
+            <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse" />
+          ) : (
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
-              <span className="text-xs font-bold text-white">Синхронизация локальная</span>
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+              <span className="text-xs font-medium text-stone-400">Онлайн</span>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </aside>

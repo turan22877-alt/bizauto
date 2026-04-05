@@ -40,8 +40,8 @@ const InventoryManager: React.FC<{
     <div className="space-y-10">
        <div className="flex justify-between items-end">
           <div>
-            <h2 className="header-font text-4xl font-black text-white mb-2">Hangar & Stock</h2>
-            <p className="text-slate-500 font-medium">Управление запасами и ресурсами предприятия</p>
+            <h2 className="header-font text-4xl font-black text-slate-800 mb-2">Hangar & Stock</h2>
+            <p className="text-slate-600 font-medium">Управление запасами и ресурсами предприятия</p>
           </div>
           <Button 
             onClick={() => setIsModalOpen(true)}
@@ -51,28 +51,28 @@ const InventoryManager: React.FC<{
           </Button>
         </div>
 
-        <div className="glass-panel rounded-[2.5rem] border border-white/5 overflow-hidden">
+        <div className="glass-panel rounded-[2.5rem] border border-slate-200 overflow-hidden">
            <table className="w-full text-left">
-              <thead className="bg-white/5">
+              <thead className="bg-slate-100">
                  <tr>
-                    <th className="px-8 py-5 text-[10px] font-black uppercase text-slate-500 tracking-widest">Наименование</th>
-                    <th className="px-8 py-5 text-[10px] font-black uppercase text-slate-500 tracking-widest">Категория</th>
-                    <th className="px-8 py-5 text-[10px] font-black uppercase text-slate-500 tracking-widest text-center">Остаток</th>
-                    <th className="px-8 py-5 text-[10px] font-black uppercase text-slate-500 tracking-widest">Стоимость</th>
+                    <th className="px-8 py-5 text-[10px] font-black uppercase text-slate-600 tracking-widest">Наименование</th>
+                    <th className="px-8 py-5 text-[10px] font-black uppercase text-slate-600 tracking-widest">Категория</th>
+                    <th className="px-8 py-5 text-[10px] font-black uppercase text-slate-600 tracking-widest text-center">Остаток</th>
+                    <th className="px-8 py-5 text-[10px] font-black uppercase text-slate-600 tracking-widest">Стоимость</th>
                     <th className="px-8 py-5"></th>
                  </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+<tbody className="divide-y divide-slate-200">
                  {inventory.length > 0 ? inventory.map(item => (
-                   <tr key={item.id} className="hover:bg-white/5 transition-colors group">
-                      <td className="px-8 py-6 font-black text-white tracking-tight">{item.name}</td>
-                      <td className="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-widest">{item.category}</td>
+                   <tr key={item.id} className="hover:bg-green-50 transition-colors group">
+                      <td className="px-8 py-6 font-black text-slate-800 tracking-tight">{item.name}</td>
+                       <td className="px-8 py-6 text-[10px] font-black text-slate-600 uppercase tracking-widest">{item.category}</td>
                       <td className="px-8 py-6 text-center">
-                         <span className={`font-black px-3 py-1 rounded-lg ${item.stock < 5 ? 'bg-rose-500/20 text-rose-500 animate-pulse' : 'bg-blue-500/10 text-blue-500'}`}>
+                         <span className={`font-black px-3 py-1 rounded-lg ${item.stock < 5 ? 'bg-rose-500/20 text-rose-500 animate-pulse' : 'bg-green-500/10 text-green-600'}`}>
                            {item.stock}
                          </span>
                       </td>
-                      <td className="px-8 py-6 font-black text-white">{item.price.toLocaleString()} ₽</td>
+                      <td className="px-8 py-6 font-black text-slate-800">{item.price.toLocaleString()} ₽</td>
                       <td className="px-8 py-6 text-right">
                          <button 
                           onClick={() => setConfirmDeleteId(item.id)} 
@@ -83,7 +83,7 @@ const InventoryManager: React.FC<{
                       </td>
                    </tr>
                  )) : (
-                   <tr><td colSpan={5} className="px-8 py-20 text-center text-slate-600 uppercase font-black tracking-widest opacity-20">Склад пуст</td></tr>
+                   <tr><td colSpan={5} className="px-8 py-20 text-center text-slate-500 uppercase font-black tracking-widest opacity-20">Склад пуст</td></tr>
                  )}
               </tbody>
            </table>
@@ -96,22 +96,22 @@ const InventoryManager: React.FC<{
         >
            <form onSubmit={handleAdd} className="space-y-6">
               <div className="space-y-1">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Название</label>
-                <input name="name" type="text" className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white focus:border-blue-500 outline-none transition-all" required />
+                <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1">Название</label>
+                <input name="name" type="text" className="w-full bg-slate-100 border border-slate-200 rounded-2xl px-5 py-4 text-slate-800 focus:border-green-500 outline-none transition-all" required />
               </div>
               <div className="grid grid-cols-2 gap-4">
                  <div className="space-y-1">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Остаток</label>
-                    <input name="stock" type="number" className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white outline-none focus:border-blue-500 transition-all" required />
+                    <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1">Остаток</label>
+                    <input name="stock" type="number" className="w-full bg-slate-100 border border-slate-200 rounded-2xl px-5 py-4 text-slate-800 outline-none focus:border-green-500 transition-all" required />
                  </div>
                  <div className="space-y-1">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Цена</label>
-                    <input name="price" type="number" className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white outline-none focus:border-blue-500 transition-all" required />
+                    <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1">Цена</label>
+                    <input name="price" type="number" className="w-full bg-slate-100 border border-slate-200 rounded-2xl px-5 py-4 text-slate-800 outline-none focus:border-green-500 transition-all" required />
                  </div>
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Категория</label>
-                <input name="category" type="text" className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white focus:border-blue-500 outline-none transition-all" required />
+                <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1">Категория</label>
+                <input name="category" type="text" className="w-full bg-slate-100 border border-slate-200 rounded-2xl px-5 py-4 text-slate-800 focus:border-green-500 outline-none transition-all" required />
               </div>
               <Button type="submit" className="w-full py-5 mt-4">
                 Оприходовать

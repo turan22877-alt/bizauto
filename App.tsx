@@ -15,21 +15,23 @@ import AnalyticsView from './components/AnalyticsView';
 import PayrollCalculator from './components/PayrollCalculator';
 import AuthScreen from './components/AuthScreen';
 import SettingsModal, { BackupPayload } from './components/SettingsModal';
+import Toast from './components/ui/Toast';
 import { getSession, logoutUser, updateUserProfile } from './utils/auth';
 import { migrateLegacyOwner, scopeByOwner } from './utils/migrate';
+import { debouncedSave, loadFromStorage, flushAllSaves } from './utils/storage';
+import { useToast } from './hooks/useToast';
 
 const App: React.FC = () => {
   const [user, setUser] = useState<UserProfile | null>(() => getSession());
   const [activeSection, setActiveSection] = useState<AppSection>(AppSection.DASHBOARD);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [focusRequest, setFocusRequest] = useState<{ appointmentId: string } | null>(null);
+  const { toasts, removeToast, success, error } = useToast();
 
-  const [clientsAll, setClientsAll] = useState<Client[]>(() => JSON.parse(localStorage.getItem('b_clients') || '[]'));
-  const [staffAll, setStaffAll] = useState<Staff[]>(() => JSON.parse(localStorage.getItem('b_staff') || '[]'));
-  const [appointmentsAll, setAppointmentsAll] = useState<Appointment[]>(() =>
-    JSON.parse(localStorage.getItem('b_appointments') || '[]')
-  );
-  const [inventoryAll, setInventoryAll] = useState<Product[]>(() => JSON.parse(localStorage.getItem('b_inventory') || '[]'));
+  const [clientsAll, setClientsAll] = useState<Client[]>(() => loadFromStorage('b_clients', []));
+  const [staffAll, setStaffAll] = useState<Staff[]>(() => loadFromStorage('b_staff', []));
+  const [appointmentsAll, setAppointmentsAll] = useState<Appointment[]>(() => loadFromStorage('b_appointments', []));
+  const [inventoryAll, setInventoryAll] = useState<Product[]>(() => loadFromStorage('b_inventory', []));
 
   const ownerUid = user?.uid ?? '';
 
@@ -86,10 +88,17 @@ const App: React.FC = () => {
     [ownerUid]
   );
 
-  useEffect(() => localStorage.setItem('b_clients', JSON.stringify(clientsAll)), [clientsAll]);
-  useEffect(() => localStorage.setItem('b_staff', JSON.stringify(staffAll)), [staffAll]);
-  useEffect(() => localStorage.setItem('b_appointments', JSON.stringify(appointmentsAll)), [appointmentsAll]);
-  useEffect(() => localStorage.setItem('b_inventory', JSON.stringify(inventoryAll)), [inventoryAll]);
+  useEffect(() => debouncedSave('b_clients', clientsAll), [clientsAll]);
+  useEffect(() => debouncedSave('b_staff', staffAll), [staffAll]);
+  useEffect(() => debouncedSave('b_appointments', appointmentsAll), [appointmentsAll]);
+  useEffect(() => debouncedSave('b_inventory', inventoryAll), [inventoryAll]);
+
+  // Flush all pending saves before page unload
+  useEffect(() => {
+    const handleBeforeUnload = () => flushAllSaves();
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
 
   const handleAuthed = (profile: UserProfile, opts?: { isNew?: boolean }) => {
     setUser(profile);
@@ -133,25 +142,39 @@ const App: React.FC = () => {
   const handleImportBackup = useCallback(
     (payload: BackupPayload) => {
       if (!user) return;
-      const uid = user.uid;
-      setClientsAll((prev) => [...prev.filter((c) => c.ownerUid !== uid), ...(payload.clients as Client[])]);
-      setStaffAll((prev) => [...prev.filter((s) => s.ownerUid !== uid), ...(payload.staff as Staff[])]);
-      setAppointmentsAll((prev) => [...prev.filter((a) => a.ownerUid !== uid), ...(payload.appointments as Appointment[])]);
-      setInventoryAll((prev) => [...prev.filter((i) => i.ownerUid !== uid), ...(payload.inventory as Product[])]);
+      try {
+        const uid = user.uid;
+        setClientsAll((prev) => [...prev.filter((c) => c.ownerUid !== uid), ...(payload.clients as Client[])]);
+        setStaffAll((prev) => [...prev.filter((s) => s.ownerUid !== uid), ...(payload.staff as Staff[])]);
+        setAppointmentsAll((prev) => [...prev.filter((a) => a.ownerUid !== uid), ...(payload.appointments as Appointment[])]);
+        setInventoryAll((prev) => [...prev.filter((i) => i.ownerUid !== uid), ...(payload.inventory as Product[])]);
+        success('Резервная копия успешно импортирована');
+      } catch (err) {
+        error('Ошибка при импорте резервной копии');
+        console.error(err);
+      }
     },
-    [user]
+    [user, success, error]
   );
 
   const handleSaveProfile = useCallback(
     (patch: { displayName: string; businessName: string }) => {
       if (!user) return;
-      const next = updateUserProfile(user.uid, {
-        displayName: patch.displayName,
-        businessName: patch.businessName || null,
-      });
-      if (next) setUser(next);
+      try {
+        const next = updateUserProfile(user.uid, {
+          displayName: patch.displayName,
+          businessName: patch.businessName || null,
+        });
+        if (next) {
+          setUser(next);
+          success('Профиль успешно обновлен');
+        }
+      } catch (err) {
+        error('Ошибка при обновлении профиля');
+        console.error(err);
+      }
     },
-    [user]
+    [user, success, error]
   );
 
   const renderContent = () => {
@@ -201,8 +224,8 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#06060a] text-slate-300 font-sans selection:bg-blue-600/30">
-      <Sidebar activeSection={activeSection} onSectionChange={setActiveSection} businessName={user.businessName} />
+    <div className="flex min-h-screen bg-stone-100 text-stone-700 font-sans selection:bg-green-200">
+      <Sidebar activeSection={activeSection} onSectionChange={setActiveSection} businessName={user.businessName} pendingAppointmentsCount={pendingAppointmentsCount} />
       <div className="flex-1 flex flex-col min-w-0 relative">
         <Header
           activeSection={activeSection}
@@ -216,8 +239,8 @@ const App: React.FC = () => {
           onOpenSettings={() => setSettingsOpen(true)}
           pendingAppointmentsCount={pendingAppointmentsCount}
         />
-        <main className="flex-1 p-6 md:p-8 overflow-y-auto">
-          <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">{renderContent()}</div>
+        <main className="flex-1 p-6 md:p-8 overflow-y-auto custom-scrollbar">
+          <div className="max-w-7xl mx-auto animate-fade-in">{renderContent()}</div>
         </main>
         <SettingsModal
           isOpen={settingsOpen}
@@ -228,6 +251,14 @@ const App: React.FC = () => {
           buildBackup={buildBackup}
         />
       </div>
+      {toasts.map((toast) => (
+        <Toast
+          key={toast.id}
+          message={toast.message}
+          type={toast.type}
+          onClose={() => removeToast(toast.id)}
+        />
+      ))}
     </div>
   );
 };

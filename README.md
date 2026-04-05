@@ -2,19 +2,103 @@
 <img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
 </div>
 
-# Run and deploy your AI Studio app
+# BizAuto | Molsheim Edition
 
-This contains everything you need to run your app locally.
+Современная система управления бизнесом для автоматизации записей, клиентов, персонала и инвентаря.
 
-View your app in AI Studio: https://ai.studio/apps/2359ceeb-762e-4175-bfaf-bb7fb404b1ac
+## ✨ Недавние улучшения
 
-## Run Locally
+### 🎨 Стили и анимации
+- Плавные переходы и микроанимации для всех интерактивных элементов
+- Улучшенные эффекты hover с градиентами и тенями
+- Новые анимации: fade-in, scale-in, slide-in-right
+- Эффект shimmer для кнопок при наведении
+- Улучшенные карточки с 3D эффектами
 
-**Prerequisites:**  Node.js
+### ⚡ Производительность
+- Debounced сохранение в localStorage (500ms задержка)
+- Оптимизированная работа с данными через `utils/storage.ts`
+- Автоматический flush данных перед закрытием страницы
+- Безопасная обработка ошибок при работе с localStorage
 
+### 🛡️ Надежность
+- Error Boundary для перехвата ошибок React
+- Toast уведомления для обратной связи с пользователем
+- Loading состояния с компонентом LoadingSpinner
+- Улучшенная обработка ошибок в критических операциях
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+### 📱 Адаптивность и доступность
+- Оптимизация для мобильных устройств
+- Поддержка touch-устройств
+- Улучшенные focus states для клавиатурной навигации
+- Поддержка high contrast режима
+- Готовность к dark mode
+- Оптимизация для печати
+
+### 🎯 UX улучшения
+- Skeleton loading для лучшего восприятия загрузки
+- Tooltip подсказки
+- Success/Error анимации (flash и shake)
+- Улучшенный scrollbar с плавными переходами
+- Кастомные scrollbar стили
+
+## 🚀 Запуск проекта
+
+**Требования:** Node.js
+
+1. Установите зависимости:
+   ```bash
+   npm install
+   ```
+
+2. Запустите dev сервер:
+   ```bash
+   npm run dev
+   ```
+
+3. Откройте браузер по адресу `http://localhost:5173`
+
+## 🏗️ Структура проекта
+
+```
+├── components/
+│   ├── ui/              # UI компоненты (Button, Modal, Toast, LoadingSpinner)
+│   ├── three/           # 3D компоненты
+│   └── ...              # Основные компоненты приложения
+├── hooks/               # React хуки (useToast)
+├── utils/               # Утилиты (storage, auth, migrate)
+├── types.ts             # TypeScript типы
+└── App.tsx              # Главный компонент
+```
+
+## 🎨 Технологии
+
+- **React 19** - UI библиотека
+- **TypeScript** - Типизация
+- **Tailwind CSS 4** - Стилизация
+- **Vite** - Сборщик
+- **Three.js** - 3D графика
+- **Lucide React** - Иконки
+- **Recharts** - Графики
+
+## 📝 Основные возможности
+
+- 📊 Dashboard с аналитикой
+- 📅 Журнал записей
+- 👥 Управление клиентами
+- 👨‍💼 Управление персоналом
+- 📦 Управление инвентарем
+- 💰 Финансовая статистика
+- 🎁 Программа лояльности
+- 🔔 Центр уведомлений
+- 📈 Аналитика
+- 💵 Расчет зарплаты
+
+## 🔧 Команды
+
+```bash
+npm run dev      # Запуск dev сервера
+npm run build    # Сборка для production
+npm run preview  # Предпросмотр production сборки
+npm run lint     # Проверка TypeScript
+```

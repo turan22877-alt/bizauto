@@ -17,19 +17,19 @@ const Button: React.FC<ButtonProps> = ({
   className = '',
   ...props
 }) => {
-  const baseStyles = "inline-flex items-center justify-center gap-2 font-black uppercase tracking-widest transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none";
-  
+  const baseStyles = "inline-flex items-center justify-center gap-2 font-semibold transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none";
+
   const variants = {
-    primary: "bugatti-gradient text-white shadow-xl shadow-blue-900/40 hover:shadow-blue-600/40",
-    secondary: "bg-white/5 hover:bg-white/10 text-white border border-white/10",
-    danger: "bg-rose-600 hover:bg-rose-500 text-white shadow-xl shadow-rose-900/40",
-    ghost: "bg-transparent hover:bg-white/5 text-slate-400 hover:text-white"
+    primary: "bg-green-600 hover:bg-green-700 text-white shadow-sm",
+    secondary: "bg-white hover:bg-stone-50 text-stone-700 border border-stone-200",
+    danger: "bg-red-600 hover:bg-red-700 text-white shadow-sm",
+    ghost: "bg-transparent hover:bg-stone-100 text-stone-500 hover:text-stone-700"
   };
 
   const sizes = {
-    sm: "px-4 py-2 text-[10px] rounded-xl",
-    md: "px-6 py-3.5 text-xs rounded-2xl",
-    lg: "px-8 py-5 text-sm rounded-[1.5rem]"
+    sm: "px-3 py-1.5 text-xs rounded-lg",
+    md: "px-5 py-2.5 text-sm rounded-lg",
+    lg: "px-6 py-3 text-sm rounded-lg"
   };
 
   return (

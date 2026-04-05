@@ -82,7 +82,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
     <Modal isOpen={isOpen} onClose={onClose} title="Настройки и данные" maxWidth="max-w-lg">
       <div className="space-y-8">
         <div className="space-y-4">
-          <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Профиль</h4>
+          <h4 className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Профиль</h4>
           <div className="space-y-1.5">
             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Отображаемое имя</label>
             <input
@@ -109,9 +109,9 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
           </Button>
         </div>
 
-        <div className="border-t border-white/10 pt-8 space-y-4">
-          <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Резервное копирование</h4>
-          <p className="text-xs text-slate-500 leading-relaxed">
+        <div className="border-t border-slate-200 pt-8 space-y-4">
+          <h4 className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Резервное копирование</h4>
+          <p className="text-xs text-slate-600 leading-relaxed">
             Экспорт и импорт затрагивают только данные текущего аккаунта (клиенты, команда, журнал, склад).
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
@@ -135,7 +135,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
         <button
           type="button"
           onClick={onClose}
-          className="w-full flex items-center justify-center gap-2 py-3 text-slate-500 hover:text-white text-xs font-bold uppercase tracking-widest"
+          className="w-full flex items-center justify-center gap-2 py-3 text-slate-600 hover:text-green-700 text-xs font-bold uppercase tracking-widest"
         >
           <X size={16} /> Закрыть
         </button>

@@ -21,21 +21,21 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, maxWidt
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-black/80 backdrop-blur-xl"
+            className="absolute inset-0 bg-stone-900/30 backdrop-blur-sm"
           />
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            initial={{ opacity: 0, scale: 0.97, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className={`glass-panel w-full ${maxWidth} rounded-[2.5rem] border border-white/10 p-8 relative z-10 shadow-2xl overflow-hidden`}
+            exit={{ opacity: 0, scale: 0.97, y: 12 }}
+            className={`bg-white w-full ${maxWidth} rounded-xl border border-stone-200 p-6 relative z-10 shadow-2xl overflow-hidden`}
           >
-            <div className="flex justify-between items-center mb-8">
-              <h3 className="header-font text-xl font-black text-white">{title}</h3>
-              <button 
-                onClick={onClose} 
-                className="p-2 text-slate-500 hover:text-white hover:bg-white/5 rounded-xl transition-all"
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-lg font-bold text-stone-800">{title}</h3>
+              <button
+                onClick={onClose}
+                className="p-1.5 text-stone-400 hover:text-stone-600 hover:bg-stone-100 rounded-lg transition-all"
               >
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
             {children}

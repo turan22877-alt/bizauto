@@ -49,25 +49,25 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthed }) => {
     <div className="min-h-screen bg-midnight text-slate-200 flex items-center justify-center p-6 relative overflow-hidden">
       <AuthScene3D />
       <div className="pointer-events-none absolute inset-0 auth-aurora z-[1]" />
-      <div className="pointer-events-none absolute top-1/4 left-1/4 w-[520px] h-[520px] rounded-full bg-blue-600/12 blur-[120px]" />
+      <div className="pointer-events-none absolute top-1/4 left-1/4 w-[520px] h-[520px] rounded-full bg-green-600/12 blur-[120px]" />
       <div className="pointer-events-none absolute bottom-1/4 right-1/4 w-[420px] h-[420px] rounded-full bg-violet-600/10 blur-[100px]" />
 
       <div className="w-full max-w-md relative z-20">
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bugatti-gradient shadow-[0_0_40px_rgba(0,102,255,0.35)] mb-6 border border-white/10">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bugatti-gradient shadow-[0_0_40px_rgba(22,163,74,0.35)] mb-6 border border-white/10">
             <span className="header-font text-xl font-black text-white">B</span>
           </div>
-          <h1 className="header-font text-2xl font-black text-white tracking-tight mb-2">BizAuto</h1>
-          <p className="text-sm text-slate-500 font-medium">Войдите или создайте аккаунт — данные хранятся локально в браузере</p>
+          <h1 className="header-font text-2xl font-black text-slate-800 tracking-tight mb-2">BizAuto</h1>
+          <p className="text-sm text-slate-600 font-medium">Войдите или создайте аккаунт — данные хранятся локально в браузере</p>
         </div>
 
-        <div className="glass-panel rounded-[2rem] border border-white/10 p-2 shadow-2xl">
-          <div className="flex rounded-[1.5rem] bg-white/[0.04] p-1 mb-8">
+        <div className="glass-panel rounded-[2rem] border border-slate-200 p-2 shadow-2xl">
+          <div className="flex rounded-[1.5rem] bg-slate-100 p-1 mb-8">
             <button
               type="button"
               onClick={() => { setMode('login'); setError(''); }}
               className={`flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-                mode === 'login' ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-500 hover:text-white'
+                mode === 'login' ? 'bg-green-600 text-white shadow-lg' : 'text-slate-600 hover:text-green-700'
               }`}
             >
               <LogIn size={16} /> Вход
@@ -76,7 +76,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthed }) => {
               type="button"
               onClick={() => { setMode('register'); setError(''); }}
               className={`flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-                mode === 'register' ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-500 hover:text-white'
+                mode === 'register' ? 'bg-green-600 text-white shadow-lg' : 'text-slate-600 hover:text-green-700'
               }`}
             >
               <UserPlus size={16} /> Регистрация
@@ -87,7 +87,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthed }) => {
             {mode === 'register' && (
               <>
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 flex items-center gap-2">
+                  <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1 flex items-center gap-2">
                     <User size={12} /> Имя
                   </label>
                   <input
@@ -99,7 +99,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthed }) => {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 flex items-center gap-2">
+                  <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1 flex items-center gap-2">
                     <Building2 size={12} /> Название бизнеса
                   </label>
                   <input
@@ -112,7 +112,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthed }) => {
               </>
             )}
             <div className="space-y-1.5">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 flex items-center gap-2">
+              <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1 flex items-center gap-2">
                 <Mail size={12} /> Email
               </label>
               <input
@@ -126,7 +126,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthed }) => {
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 flex items-center gap-2">
+              <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1 flex items-center gap-2">
                 <Lock size={12} /> Пароль
               </label>
               <input
@@ -151,7 +151,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthed }) => {
           </form>
         </div>
 
-        <p className="text-center text-[11px] text-slate-600 mt-8 font-medium">
+        <p className="text-center text-[11px] text-slate-500 mt-8 font-medium">
           Регистрация не отправляет данные на сервер: пароль хэшируется и сохраняется только в этом браузере.
         </p>
       </div>
