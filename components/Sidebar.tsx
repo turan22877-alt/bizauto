@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   LayoutDashboard,
   Calendar,
@@ -16,6 +16,7 @@ import {
   Zap,
   Shield,
   TrendingUp,
+  X,
 } from 'lucide-react';
 import { AppSection } from '../types';
 
@@ -24,6 +25,8 @@ interface SidebarProps {
   onSectionChange: (section: AppSection) => void;
   businessName?: string;
   pendingAppointmentsCount?: number;
+  mobileOpen?: boolean;
+  onMobileClose?: () => void;
 }
 
 type MenuGroup = {
@@ -32,9 +35,46 @@ type MenuGroup = {
   items: { id: AppSection; label: string; icon: React.FC<{ size?: number; strokeWidth?: number }>; badge?: number }[];
 };
 
-const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange, businessName, pendingAppointmentsCount = 0 }) => {
+const Sidebar: React.FC<SidebarProps> = ({
+  activeSection,
+  onSectionChange,
+  businessName,
+  pendingAppointmentsCount = 0,
+  mobileOpen = false,
+  onMobileClose
+}) => {
   const [collapsed, setCollapsed] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+
+  // Close mobile menu on escape key
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && mobileOpen && onMobileClose) {
+        onMobileClose();
+      }
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [mobileOpen, onMobileClose]);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileOpen]);
+
+  const handleItemClick = (section: AppSection) => {
+    onSectionChange(section);
+    if (onMobileClose) {
+      onMobileClose();
+    }
+  };
 
   const menuGroups: MenuGroup[] = [
     {
@@ -68,38 +108,64 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange, busin
   ];
 
   return (
-    <aside
-      className={`bg-stone-900 border-r border-stone-700/50 flex flex-col sticky top-0 h-screen z-50 transition-all duration-300 ${
-        collapsed ? 'w-[76px]' : 'w-72'
-      }`}
-    >
-      <div className="flex flex-col h-full min-h-0 p-5">
-        {/* Logo */}
-        <div className={`flex items-center gap-3 mb-6 shrink-0 ${collapsed ? 'justify-center' : ''}`}>
-          <div className="w-10 h-10 bugatti-gradient rounded-lg flex items-center justify-center text-sm font-black text-white shrink-0">
-            B
-          </div>
-          {!collapsed && (
-            <div className="flex flex-col min-w-0 overflow-hidden">
-              <h1 className="header-font text-sm font-black text-white tracking-tight truncate">BIZAUTO</h1>
-              <p className="text-[10px] font-semibold text-green-400/80 uppercase tracking-wider truncate">
-                {businessName || 'Управление сервисом'}
-              </p>
-            </div>
-          )}
-        </div>
+    <>
+      {/* Mobile overlay */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden animate-fade-in"
+          onClick={onMobileClose}
+          aria-hidden="true"
+        />
+      )}
 
-        {/* Collapse toggle */}
-        <button
-          type="button"
-          onClick={() => setCollapsed(!collapsed)}
-          className={`mb-4 rounded-lg border border-stone-700 text-stone-400 hover:text-white hover:bg-stone-800 transition-all ${
-            collapsed ? 'mx-auto w-10 h-10 flex items-center justify-center' : 'w-full flex items-center justify-end p-2'
-          }`}
-          aria-label={collapsed ? 'Развернуть' : 'Свернуть'}
-        >
-          {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-        </button>
+      <aside
+        className={`bg-stone-900 border-r border-stone-700/50 flex flex-col h-screen z-50 transition-all duration-300
+          ${collapsed ? 'w-[76px]' : 'w-72'}
+          lg:sticky lg:top-0
+          fixed top-0 left-0 ${mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        `}
+      >
+        <div className="flex flex-col h-full min-h-0 p-5">
+          {/* Logo & Mobile Close */}
+          <div className="flex items-center justify-between mb-6 shrink-0">
+            <div className={`flex items-center gap-3 ${collapsed ? 'justify-center' : ''}`}>
+              <div className="w-10 h-10 bugatti-gradient rounded-lg flex items-center justify-center text-sm font-black text-white shrink-0">
+                B
+              </div>
+              {!collapsed && (
+                <div className="flex flex-col min-w-0 overflow-hidden">
+                  <h1 className="header-font text-sm font-black text-white tracking-tight truncate">BIZAUTO</h1>
+                  <p className="text-[10px] font-semibold text-green-400/80 uppercase tracking-wider truncate">
+                    {businessName || 'Управление сервисом'}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Mobile close button */}
+            {!collapsed && (
+              <button
+                type="button"
+                onClick={onMobileClose}
+                className="lg:hidden p-2 text-stone-400 hover:text-white hover:bg-stone-800 rounded-lg transition-all"
+                aria-label="Закрыть меню"
+              >
+                <X size={20} />
+              </button>
+            )}
+          </div>
+
+          {/* Collapse toggle - desktop only */}
+          <button
+            type="button"
+            onClick={() => setCollapsed(!collapsed)}
+            className={`mb-4 rounded-lg border border-stone-700 text-stone-400 hover:text-white hover:bg-stone-800 transition-all hidden lg:flex ${
+              collapsed ? 'mx-auto w-10 h-10 items-center justify-center' : 'w-full items-center justify-end p-2'
+            }`}
+            aria-label={collapsed ? 'Развернуть' : 'Свернуть'}
+          >
+            {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+          </button>
 
         {/* Navigation */}
         <nav className="space-y-5 overflow-y-auto flex-1 min-h-0 pr-1 sidebar-scroll">
@@ -128,7 +194,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange, busin
                     >
                       <button
                         type="button"
-                        onClick={() => onSectionChange(item.id)}
+                        onClick={() => handleItemClick(item.id)}
                         className={`w-full flex items-center gap-3 rounded-lg text-sm font-medium transition-all relative overflow-hidden ${
                           collapsed ? 'justify-center p-2.5' : 'px-3 py-2.5'
                         } ${
@@ -188,8 +254,9 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange, busin
             </div>
           )}
         </div>
-      </div>
-    </aside>
+        </div>
+      </aside>
+    </>
   );
 };
 

@@ -26,6 +26,7 @@ const App: React.FC = () => {
   const [activeSection, setActiveSection] = useState<AppSection>(AppSection.DASHBOARD);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [focusRequest, setFocusRequest] = useState<{ appointmentId: string } | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { toasts, removeToast, success, error } = useToast();
 
   const [clientsAll, setClientsAll] = useState<Client[]>(() => loadFromStorage('b_clients', []));
@@ -225,7 +226,14 @@ const App: React.FC = () => {
 
   return (
     <div className="flex min-h-screen bg-stone-100 text-stone-700 font-sans selection:bg-green-200">
-      <Sidebar activeSection={activeSection} onSectionChange={setActiveSection} businessName={user.businessName} pendingAppointmentsCount={pendingAppointmentsCount} />
+      <Sidebar
+        activeSection={activeSection}
+        onSectionChange={setActiveSection}
+        businessName={user.businessName}
+        pendingAppointmentsCount={pendingAppointmentsCount}
+        mobileOpen={mobileMenuOpen}
+        onMobileClose={() => setMobileMenuOpen(false)}
+      />
       <div className="flex-1 flex flex-col min-w-0 relative">
         <Header
           activeSection={activeSection}
@@ -238,8 +246,9 @@ const App: React.FC = () => {
           onNavigate={onNavigate}
           onOpenSettings={() => setSettingsOpen(true)}
           pendingAppointmentsCount={pendingAppointmentsCount}
+          onMenuClick={() => setMobileMenuOpen(true)}
         />
-        <main className="flex-1 p-6 md:p-8 overflow-y-auto custom-scrollbar">
+        <main className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto custom-scrollbar">
           <div className="max-w-7xl mx-auto animate-fade-in">{renderContent()}</div>
         </main>
         <SettingsModal

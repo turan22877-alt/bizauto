@@ -1,6 +1,6 @@
 
 import React, { useMemo, useState, useRef, useEffect } from 'react';
-import { Search, Bell, Settings, LogOut, Users, Calendar, UserCog, Package, ChevronRight } from 'lucide-react';
+import { Search, Bell, Settings, LogOut, Users, Calendar, UserCog, Package, ChevronRight, Menu } from 'lucide-react';
 import { AppSection, UserProfile, Client, Appointment, Staff, Product } from '../types';
 
 export type SearchNavigateDetail = { appointmentId?: string };
@@ -16,6 +16,7 @@ interface HeaderProps {
   onNavigate: (section: AppSection, detail?: SearchNavigateDetail) => void;
   onOpenSettings: () => void;
   pendingAppointmentsCount: number;
+  onMenuClick?: () => void;
 }
 
 type Hit =
@@ -35,6 +36,7 @@ const Header: React.FC<HeaderProps> = ({
   onNavigate,
   onOpenSettings,
   pendingAppointmentsCount,
+  onMenuClick,
 }) => {
   const titles: Record<AppSection, string> = {
     [AppSection.DASHBOARD]: 'Обзор',
@@ -130,11 +132,21 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="h-16 bg-white border-b border-stone-200 flex items-center justify-between px-4 md:px-8 sticky top-0 z-40 shadow-sm">
+      {/* Mobile menu button */}
+      <button
+        type="button"
+        onClick={onMenuClick}
+        className="lg:hidden p-2 text-stone-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all mr-2"
+        aria-label="Открыть меню"
+      >
+        <Menu size={24} />
+      </button>
+
       <div className="flex flex-col min-w-0 flex-1 pr-2">
         <h2 className="text-sm font-bold text-stone-800 truncate">
           {titles[activeSection]}
         </h2>
-        <p className="text-xs text-stone-400 truncate">
+        <p className="text-xs text-stone-400 truncate hidden sm:block">
           {user.businessName || 'BizAuto'}
         </p>
       </div>
