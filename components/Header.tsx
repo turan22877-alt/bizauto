@@ -131,31 +131,31 @@ const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="h-16 bg-white border-b border-stone-200 flex items-center justify-between px-4 md:px-8 sticky top-0 z-40 shadow-sm">
+    <header className="h-16 sm:h-16 bg-white border-b border-stone-200 flex items-center justify-between px-3 sm:px-4 md:px-8 sticky top-0 z-40 shadow-sm">
       {/* Mobile menu button */}
       <button
         type="button"
         onClick={onMenuClick}
-        className="lg:hidden p-2 text-stone-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all mr-2"
+        className="lg:hidden p-2.5 text-stone-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all mr-2"
         aria-label="Открыть меню"
       >
-        <Menu size={24} />
+        <Menu size={22} />
       </button>
 
       <div className="flex flex-col min-w-0 flex-1 pr-2">
-        <h2 className="text-sm font-bold text-stone-800 truncate">
+        <h2 className="text-sm sm:text-base font-bold text-stone-800 truncate">
           {titles[activeSection]}
         </h2>
         <p className="text-xs text-stone-400 truncate hidden sm:block">
-          {user.businessName || 'BizAuto'}
+          {user.businessName || 'Selliz'}
         </p>
       </div>
 
-      <div className="flex items-center gap-3 shrink-0">
+      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
         {/* Search */}
         <div ref={searchRef} className="relative group hidden md:block">
           <Search
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-green-600 transition-colors z-10"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-orange-600 transition-colors z-10"
             size={16}
           />
           <input
@@ -164,7 +164,7 @@ const Header: React.FC<HeaderProps> = ({
             onChange={(e) => { setQ(e.target.value); setSearchOpen(true); }}
             onFocus={() => setSearchOpen(true)}
             placeholder="Поиск..."
-            className="pl-10 pr-4 py-2 bg-stone-50 border border-stone-200 rounded-lg text-sm focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100 w-56 lg:w-72 transition-all placeholder:text-stone-400 text-stone-700"
+            className="pl-10 pr-4 py-2 bg-stone-50 border border-stone-200 rounded-lg text-sm focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100 w-56 lg:w-72 transition-all placeholder:text-stone-400 text-stone-700"
             autoComplete="off"
           />
           {searchOpen && q.trim().length > 0 && (
@@ -177,9 +177,9 @@ const Header: React.FC<HeaderProps> = ({
                     key={`${h.kind}-${h.id}`}
                     type="button"
                     onClick={() => pickHit(h)}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-green-50 transition-colors border-b border-stone-100 last:border-0"
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-orange-50 transition-colors border-b border-stone-100 last:border-0"
                   >
-                    <span className="text-green-600 shrink-0">{iconFor(h)}</span>
+                    <span className="text-orange-600 shrink-0">{iconFor(h)}</span>
                     <span className="min-w-0 flex-1">
                       <span className="block text-xs font-medium text-stone-700 truncate">{h.title}</span>
                       <span className="block text-[10px] text-stone-400 truncate">{h.sub}</span>
@@ -196,12 +196,12 @@ const Header: React.FC<HeaderProps> = ({
         <button
           type="button"
           onClick={() => onNavigate(AppSection.BOOKING_JOURNAL)}
-          className="p-2 text-stone-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all relative"
+          className="p-2 sm:p-2 text-stone-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all relative"
           aria-label="Записи"
         >
           <Bell size={20} />
           {pendingAppointmentsCount > 0 && (
-            <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full bg-green-600 text-[10px] font-bold text-white">
+            <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full bg-orange-600 text-[10px] font-bold text-white">
               {pendingAppointmentsCount > 9 ? '9+' : pendingAppointmentsCount}
             </span>
           )}
@@ -211,7 +211,7 @@ const Header: React.FC<HeaderProps> = ({
         <button
           type="button"
           onClick={onOpenSettings}
-          className="p-2 text-stone-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all hidden sm:block"
+          className="p-2 text-stone-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all hidden sm:block"
           aria-label="Настройки"
         >
           <Settings size={20} />
@@ -221,8 +221,8 @@ const Header: React.FC<HeaderProps> = ({
         <div className="w-px h-8 bg-stone-200 hidden sm:block" />
 
         {/* User */}
-        <div className="flex items-center gap-3">
-          <div className="text-right hidden sm:block">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="text-right hidden md:block">
             <p className="text-xs font-bold text-stone-700 truncate max-w-[120px]">
               {user.displayName}
             </p>
@@ -234,7 +234,7 @@ const Header: React.FC<HeaderProps> = ({
           <button
             type="button"
             onClick={onLogout}
-            className="p-2 text-stone-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+            className="p-2 text-stone-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all hidden sm:block"
             title="Выйти"
             aria-label="Выйти"
           >

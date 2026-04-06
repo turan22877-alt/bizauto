@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Download, Upload, X } from 'lucide-react';
 import Modal from './ui/Modal';
 import Button from './ui/Button';
-import { UserProfile } from '../types';
+import { UserProfile, Currency, CURRENCY_NAMES } from '../types';
 
 export type BackupPayload = {
   version: 1;
@@ -18,7 +18,7 @@ interface SettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
   user: UserProfile;
-  onSaveProfile: (patch: { displayName: string; businessName: string }) => void;
+  onSaveProfile: (patch: { displayName: string; businessName: string; currency: Currency }) => void;
   onImportBackup: (payload: BackupPayload) => void;
   buildBackup: () => BackupPayload;
 }
@@ -33,6 +33,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
 }) => {
   const [displayName, setDisplayName] = useState(user.displayName);
   const [businessName, setBusinessName] = useState(user.businessName || '');
+  const [currency, setCurrency] = useState<Currency>(user.currency || 'RUB');
   const [importError, setImportError] = useState('');
   const fileRef = React.useRef<HTMLInputElement>(null);
 
@@ -40,6 +41,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
     if (isOpen) {
       setDisplayName(user.displayName);
       setBusinessName(user.businessName || '');
+      setCurrency(user.currency || 'RUB');
       setImportError('');
     }
   }, [isOpen, user]);
@@ -100,10 +102,24 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
               placeholder="Как в шапке и сайдбаре"
             />
           </div>
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Валюта</label>
+            <select
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value as Currency)}
+              className="input-field"
+            >
+              {(Object.keys(CURRENCY_NAMES) as Currency[]).map((curr) => (
+                <option key={curr} value={curr}>
+                  {CURRENCY_NAMES[curr]}
+                </option>
+              ))}
+            </select>
+          </div>
           <Button
             type="button"
             className="w-full"
-            onClick={() => onSaveProfile({ displayName, businessName })}
+            onClick={() => onSaveProfile({ displayName, businessName, currency })}
           >
             Сохранить профиль
           </Button>

@@ -120,12 +120,12 @@ const Sidebar: React.FC<SidebarProps> = ({
 
       <aside
         className={`bg-stone-900 border-r border-stone-700/50 flex flex-col h-screen z-50 transition-all duration-300
-          ${collapsed ? 'w-[76px]' : 'w-72'}
+          ${collapsed ? 'w-[76px]' : 'w-72 sm:w-80'}
           lg:sticky lg:top-0
           fixed top-0 left-0 ${mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
       >
-        <div className="flex flex-col h-full min-h-0 p-5">
+        <div className="flex flex-col h-full min-h-0 p-4 sm:p-5">
           {/* Logo & Mobile Close */}
           <div className="flex items-center justify-between mb-6 shrink-0">
             <div className={`flex items-center gap-3 ${collapsed ? 'justify-center' : ''}`}>
@@ -134,9 +134,9 @@ const Sidebar: React.FC<SidebarProps> = ({
               </div>
               {!collapsed && (
                 <div className="flex flex-col min-w-0 overflow-hidden">
-                  <h1 className="header-font text-sm font-black text-white tracking-tight truncate">BIZAUTO</h1>
-                  <p className="text-[10px] font-semibold text-green-400/80 uppercase tracking-wider truncate">
-                    {businessName || 'Управление сервисом'}
+                  <h1 className="header-font text-sm font-black text-white tracking-tight truncate">SELLIZ</h1>
+                  <p className="text-[10px] font-semibold text-orange-400/80 uppercase tracking-wider truncate">
+                    {businessName || 'Управление продажами'}
                   </p>
                 </div>
               )}
@@ -199,7 +199,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                           collapsed ? 'justify-center p-2.5' : 'px-3 py-2.5'
                         } ${
                           isActive
-                            ? 'bg-green-600 text-white shadow-lg'
+                            ? 'bg-orange-600 text-white shadow-lg'
                             : 'text-stone-400 hover:text-white hover:bg-stone-800'
                         }`}
                       >
@@ -213,7 +213,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                           <>
                             <span className="truncate">{item.label}</span>
                             {item.badge && item.badge > 0 && (
-                              <span className="ml-auto min-w-[20px] h-5 px-1.5 flex items-center justify-center rounded-full bg-green-500 text-[10px] font-bold text-white">
+                              <span className="ml-auto min-w-[20px] h-5 px-1.5 flex items-center justify-center rounded-full bg-orange-500 text-[10px] font-bold text-white">
                                 {item.badge > 9 ? '9+' : item.badge}
                               </span>
                             )}
@@ -221,7 +221,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                         )}
 
                         {collapsed && item.badge && item.badge > 0 && (
-                          <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full" />
+                          <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-orange-500 rounded-full" />
                         )}
                       </button>
 
@@ -246,10 +246,10 @@ const Sidebar: React.FC<SidebarProps> = ({
         {/* Status footer */}
         <div className={`mt-4 pt-4 border-t border-stone-800 shrink-0 ${collapsed ? 'flex justify-center' : ''}`}>
           {collapsed ? (
-            <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse" />
+            <div className="w-2.5 h-2.5 bg-orange-500 rounded-full animate-pulse" />
           ) : (
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+              <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
               <span className="text-xs font-medium text-stone-400">Онлайн</span>
             </div>
           )}

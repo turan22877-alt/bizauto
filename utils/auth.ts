@@ -1,4 +1,4 @@
-import { UserProfile } from '../types';
+import { UserProfile, Currency } from '../types';
 
 const USERS_KEY = 'b_users';
 const SESSION_KEY = 'b_session';
@@ -9,6 +9,7 @@ export type StoredUser = {
   passwordHash: string;
   displayName: string;
   businessName?: string;
+  currency?: Currency;
   createdAt: number;
 };
 
@@ -39,6 +40,7 @@ export function sessionToProfile(u: StoredUser): UserProfile {
     displayName: u.displayName,
     role: 'master',
     businessName: u.businessName,
+    currency: u.currency || 'RUB',
     createdAt: u.createdAt,
   };
 }
@@ -109,7 +111,7 @@ export function logoutUser() {
 
 export function updateUserProfile(
   uid: string,
-  patch: { displayName?: string; businessName?: string | null }
+  patch: { displayName?: string; businessName?: string | null; currency?: Currency }
 ): UserProfile | null {
   const users = readUsers();
   const i = users.findIndex((u) => u.uid === uid);
@@ -119,6 +121,9 @@ export function updateUserProfile(
   if (patch.businessName !== undefined) {
     const b = patch.businessName?.trim();
     row.businessName = b || undefined;
+  }
+  if (patch.currency !== undefined) {
+    row.currency = patch.currency;
   }
   users[i] = row;
   writeUsers(users);

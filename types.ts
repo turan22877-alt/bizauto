@@ -15,12 +15,27 @@ export enum AppSection {
 
 export type UserRole = 'master' | 'staff';
 
+export type Currency = 'RUB' | 'USD' | 'AZN';
+
+export const CURRENCY_SYMBOLS: Record<Currency, string> = {
+  RUB: '₽',
+  USD: '$',
+  AZN: '₼'
+};
+
+export const CURRENCY_NAMES: Record<Currency, string> = {
+  RUB: 'Российский рубль',
+  USD: 'Доллар США',
+  AZN: 'Азербайджанский манат'
+};
+
 export interface UserProfile {
   uid: string;
   email: string;
   displayName: string;
   role: UserRole;
   businessName?: string;
+  currency?: Currency;
   createdAt: number;
 }
 

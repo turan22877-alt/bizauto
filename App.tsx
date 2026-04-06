@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { AppSection, Client, Staff, Appointment, Product, UserProfile } from './types';
+import { AppSection, Client, Staff, Appointment, Product, UserProfile, Currency } from './types';
 import Sidebar from './components/Sidebar';
 import Header, { SearchNavigateDetail } from './components/Header';
 import Dashboard from './components/Dashboard';
@@ -159,12 +159,13 @@ const App: React.FC = () => {
   );
 
   const handleSaveProfile = useCallback(
-    (patch: { displayName: string; businessName: string }) => {
+    (patch: { displayName: string; businessName: string; currency: Currency }) => {
       if (!user) return;
       try {
         const next = updateUserProfile(user.uid, {
           displayName: patch.displayName,
           businessName: patch.businessName || null,
+          currency: patch.currency,
         });
         if (next) {
           setUser(next);
@@ -248,7 +249,7 @@ const App: React.FC = () => {
           pendingAppointmentsCount={pendingAppointmentsCount}
           onMenuClick={() => setMobileMenuOpen(true)}
         />
-        <main className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto custom-scrollbar">
+        <main className="flex-1 p-3 sm:p-4 md:p-6 lg:p-8 overflow-y-auto custom-scrollbar">
           <div className="max-w-7xl mx-auto animate-fade-in">{renderContent()}</div>
         </main>
         <SettingsModal
