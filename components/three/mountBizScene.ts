@@ -35,20 +35,20 @@ export function mountBizScene(container: HTMLElement, mode: BizSceneMode): () =>
   scene.add(new THREE.AmbientLight(0xffffff, mode === 'auth' ? 0.4 : 0.45));
 
   if (mode === 'auth') {
-    const spot = new THREE.SpotLight(0x60a5fa, 1.15, 0, 0.35, 0.6);
+    const spot = new THREE.SpotLight(0xffa500, 1.15, 0, 0.35, 0.6);
     spot.position.set(8, 10, 6);
     scene.add(spot);
-    const p1 = new THREE.PointLight(0xa78bfa, 0.85, 0, 2);
+    const p1 = new THREE.PointLight(0xffd700, 0.85, 0, 2);
     p1.position.set(-6, 4, -4);
     scene.add(p1);
-    const p2 = new THREE.PointLight(0x0066ff, 0.5, 0, 2);
+    const p2 = new THREE.PointLight(0xff8c00, 0.5, 0, 2);
     p2.position.set(4, -2, 6);
     scene.add(p2);
   } else {
     const dir = new THREE.DirectionalLight(0xffffff, 0.9);
     dir.position.set(4, 6, 4);
     scene.add(dir);
-    const p = new THREE.PointLight(0x60a5fa, 0.8, 0, 2);
+    const p = new THREE.PointLight(0xffa500, 0.8, 0, 2);
     p.position.set(0, 2, 4);
     scene.add(p);
   }
@@ -57,32 +57,32 @@ export function mountBizScene(container: HTMLElement, mode: BizSceneMode): () =>
 
   if (mode === 'auth') {
     const gKnot = new THREE.Group();
-    const knot = new THREE.Mesh(
-      new THREE.TorusKnotGeometry(1, 0.26, 120, 24),
-      new THREE.MeshStandardMaterial({
-        color: 0x172554,
-        emissive: 0x1d4ed8,
-        emissiveIntensity: 0.35,
-        metalness: 0.9,
-        roughness: 0.15,
-      })
-    );
+     const knot = new THREE.Mesh(
+       new THREE.TorusKnotGeometry(1, 0.26, 120, 24),
+       new THREE.MeshStandardMaterial({
+         color: 0x431407,
+         emissive: 0xea580c,
+         emissiveIntensity: 0.35,
+         metalness: 0.9,
+         roughness: 0.15,
+       })
+     );
     knot.scale.setScalar(1.15);
     gKnot.add(knot);
     scene.add(gKnot);
     animGroups.push(gKnot);
 
     const gIco = new THREE.Group();
-    const ico = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(0.82, 0),
-      new THREE.MeshStandardMaterial({
-        color: 0x2563eb,
-        emissive: 0x1e40af,
-        emissiveIntensity: 0.45,
-        metalness: 0.78,
-        roughness: 0.18,
-      })
-    );
+     const ico = new THREE.Mesh(
+       new THREE.IcosahedronGeometry(0.82, 0),
+       new THREE.MeshStandardMaterial({
+         color: 0xea580c,
+         emissive: 0xf97316,
+         emissiveIntensity: 0.45,
+         metalness: 0.78,
+         roughness: 0.18,
+       })
+     );
     ico.position.set(3.2, 0.8, -1.8);
     ico.rotation.set(0.4, 0.7, 0);
     gIco.add(ico);
@@ -90,16 +90,16 @@ export function mountBizScene(container: HTMLElement, mode: BizSceneMode): () =>
     animGroups.push(gIco);
 
     const gRing = new THREE.Group();
-    const ring = new THREE.Mesh(
-      new THREE.TorusGeometry(1.35, 0.04, 16, 80),
-      new THREE.MeshStandardMaterial({
-        color: 0x6366f1,
-        emissive: 0x4338ca,
-        emissiveIntensity: 0.4,
-        metalness: 0.92,
-        roughness: 0.12,
-      })
-    );
+     const ring = new THREE.Mesh(
+       new THREE.TorusGeometry(1.35, 0.04, 16, 80),
+       new THREE.MeshStandardMaterial({
+         color: 0xf97316,
+         emissive: 0xea580c,
+         emissiveIntensity: 0.4,
+         metalness: 0.92,
+         roughness: 0.12,
+       })
+     );
     ring.position.set(-3, -0.6, -2);
     ring.rotation.set(1.1, 0, 0.5);
     gRing.add(ring);
@@ -107,26 +107,26 @@ export function mountBizScene(container: HTMLElement, mode: BizSceneMode): () =>
     animGroups.push(gRing);
   } else {
     const gMain = new THREE.Group();
-    const torus = new THREE.Mesh(
-      new THREE.TorusGeometry(1.05, 0.32, 32, 64),
-      new THREE.MeshStandardMaterial({
-        color: 0x1e3a8a,
-        emissive: 0x2563eb,
-        emissiveIntensity: 0.28,
-        metalness: 0.9,
-        roughness: 0.18,
-      })
-    );
-    const oct = new THREE.Mesh(
-      new THREE.OctahedronGeometry(0.55, 0),
-      new THREE.MeshStandardMaterial({
-        color: 0x38bdf8,
-        emissive: 0x0284c7,
-        emissiveIntensity: 0.38,
-        metalness: 0.72,
-        roughness: 0.22,
-      })
-    );
+     const torus = new THREE.Mesh(
+       new THREE.TorusGeometry(1.05, 0.32, 32, 64),
+       new THREE.MeshStandardMaterial({
+         color: 0x431407,
+         emissive: 0xea580c,
+         emissiveIntensity: 0.28,
+         metalness: 0.9,
+         roughness: 0.18,
+       })
+     );
+     const oct = new THREE.Mesh(
+       new THREE.OctahedronGeometry(0.55, 0),
+       new THREE.MeshStandardMaterial({
+         color: 0xea580c,
+         emissive: 0xf97316,
+         emissiveIntensity: 0.38,
+         metalness: 0.72,
+         roughness: 0.22,
+       })
+     );
     oct.position.set(1.85, 0.4, -0.6);
     gMain.add(torus);
     gMain.add(oct);

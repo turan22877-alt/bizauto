@@ -44,8 +44,8 @@ const PayrollCalculator: React.FC<PayrollCalculatorProps> = ({ staff, appointmen
       </div>
 
       <div className="glass-panel p-10 md:p-12 rounded-[2.5rem] border border-slate-200 text-center relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-green-600/5 rounded-full -mr-32 -mt-32 blur-3xl" />
-        <div className="w-20 h-20 bg-green-600/10 text-green-600 rounded-[2rem] flex items-center justify-center mx-auto mb-8 border border-green-500/20">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-orange-600/5 rounded-full -mr-32 -mt-32 blur-3xl" />
+        <div className="w-20 h-20 bg-orange-600/10 text-orange-600 rounded-[2rem] flex items-center justify-center mx-auto mb-8 border border-orange-500/20">
           <Calculator size={32} />
         </div>
         <h2 className="header-font text-2xl md:text-3xl font-black text-slate-800 mb-4">Расчёт по данным журнала</h2>
@@ -69,10 +69,10 @@ const PayrollCalculator: React.FC<PayrollCalculatorProps> = ({ staff, appointmen
           {rows.map(({ s, rev, base, pct, bonus, total }) => (
             <div
               key={s.id}
-              className="glass-panel p-8 rounded-[2rem] border border-slate-200 hover:border-green-500/20 transition-all group"
+              className="glass-panel p-8 rounded-[2rem] border border-slate-200 hover:border-orange-500/20 transition-all group"
             >
               <div className="flex items-center gap-4 mb-8">
-                <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-500 group-hover:text-green-600 transition-colors border border-slate-200">
+                <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-500 group-hover:text-orange-600 transition-colors border border-slate-200">
                   <UserCheck size={24} />
                 </div>
                 <div className="min-w-0">
@@ -91,7 +91,7 @@ const PayrollCalculator: React.FC<PayrollCalculatorProps> = ({ staff, appointmen
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-slate-600 font-bold uppercase tracking-widest">Комиссия ({pct}%)</span>
-                  <span className="font-black text-emerald-500">+{bonus.toLocaleString()} ₽</span>
+                  <span className="font-black text-orange-500">+{bonus.toLocaleString()} ₽</span>
                 </div>
                 <div className="pt-4 mt-4 border-t border-slate-200 flex justify-between items-baseline">
                   <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Итого</span>

@@ -46,6 +46,13 @@ const Sidebar: React.FC<SidebarProps> = ({
   const [collapsed, setCollapsed] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
+  // Reset collapsed state when mobile menu opens
+  useEffect(() => {
+    if (mobileOpen) {
+      setCollapsed(false);
+    }
+  }, [mobileOpen]);
+
   // Close mobile menu on escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -120,17 +127,17 @@ const Sidebar: React.FC<SidebarProps> = ({
 
       <aside
         className={`bg-stone-900 border-r border-stone-700/50 flex flex-col h-screen z-50 transition-all duration-300
-          ${collapsed ? 'w-[76px]' : 'w-72 sm:w-80'}
+          ${collapsed && !mobileOpen ? 'w-20' : 'w-80'}
           lg:sticky lg:top-0
           fixed top-0 left-0 ${mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
       >
-        <div className="flex flex-col h-full min-h-0 p-4 sm:p-5">
+        <div className="flex flex-col h-full min-h-0 p-5">
           {/* Logo & Mobile Close */}
           <div className="flex items-center justify-between mb-6 shrink-0">
             <div className={`flex items-center gap-3 ${collapsed ? 'justify-center' : ''}`}>
               <div className="w-10 h-10 bugatti-gradient rounded-lg flex items-center justify-center text-sm font-black text-white shrink-0">
-                B
+                S
               </div>
               {!collapsed && (
                 <div className="flex flex-col min-w-0 overflow-hidden">
@@ -227,7 +234,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
                       {/* Tooltip when collapsed */}
                       {collapsed && isHovered && (
-                        <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 bg-stone-800 border border-stone-700 rounded-lg shadow-xl z-[100] whitespace-nowrap pointer-events-none">
+                        <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 bg-stone-800 border border-stone-700 rounded-lg shadow-xl z-[60] whitespace-nowrap pointer-events-none">
                           <span className="text-xs font-medium text-white">{item.label}</span>
                           <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-stone-800" />
                         </div>

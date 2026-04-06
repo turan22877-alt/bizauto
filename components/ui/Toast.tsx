@@ -23,13 +23,13 @@ const Toast: React.FC<ToastProps> = ({ message, type, duration = 3000, onClose }
   }, [duration, onClose]);
 
   const icons = {
-    success: <CheckCircle className="w-5 h-5 text-green-600" />,
+    success: <CheckCircle className="w-5 h-5 text-orange-600" />,
     error: <XCircle className="w-5 h-5 text-red-600" />,
     info: <AlertCircle className="w-5 h-5 text-blue-600" />
   };
 
   const bgColors = {
-    success: 'bg-green-50 border-green-200',
+    success: 'bg-orange-50 border-orange-200',
     error: 'bg-red-50 border-red-200',
     info: 'bg-blue-50 border-blue-200'
   };
@@ -37,7 +37,7 @@ const Toast: React.FC<ToastProps> = ({ message, type, duration = 3000, onClose }
   return (
     <div
       className={`
-        fixed top-4 right-4 z-50 max-w-md
+        fixed top-4 right-4 left-4 sm:left-auto z-50 max-w-md sm:max-w-md mx-auto sm:mx-0
         ${isVisible ? 'animate-slide-in-right' : 'opacity-0 translate-x-full'}
         transition-all duration-300
       `}
@@ -50,7 +50,7 @@ const Toast: React.FC<ToastProps> = ({ message, type, duration = 3000, onClose }
             setIsVisible(false);
             setTimeout(onClose, 300);
           }}
-          className="text-stone-400 hover:text-stone-600 transition-colors"
+          className="text-stone-400 hover:text-stone-600 transition-colors shrink-0"
         >
           <X className="w-4 h-4" />
         </button>

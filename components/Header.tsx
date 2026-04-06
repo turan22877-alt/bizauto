@@ -168,7 +168,7 @@ const Header: React.FC<HeaderProps> = ({
             autoComplete="off"
           />
           {searchOpen && q.trim().length > 0 && (
-            <div className="absolute top-full left-0 right-0 mt-2 py-1 rounded-lg border border-stone-200 bg-white shadow-lg z-[60] max-h-80 overflow-y-auto">
+            <div className="absolute top-full left-0 right-0 mt-2 py-1 rounded-lg border border-stone-200 bg-white shadow-xl z-50 max-h-80 overflow-y-auto">
               {hits.length === 0 ? (
                 <p className="px-4 py-4 text-xs text-stone-400 text-center">Ничего не найдено</p>
               ) : (

@@ -14,7 +14,7 @@ const NotificationCenter: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
            <div className="glass-panel p-10 rounded-[2.5rem] border border-slate-200">
               <h3 className="header-font text-xl font-bold mb-8 flex items-center gap-3 text-slate-800">
-                 <Mail className="text-green-600" /> Шаблоны рассылок
+                  <Mail className="text-orange-600" /> Шаблоны рассылок
               </h3>
               <div className="space-y-4">
                  {[
@@ -23,20 +23,20 @@ const NotificationCenter: React.FC = () => {
                    { title: 'Поздравление с ДР', status: 'Отключен', icon: Mail },
                    { title: 'Запрос отзыва', status: 'Активен', icon: MessageSquare },
                  ].map((t, i) => (
-<div key={i} className="flex items-center justify-between p-5 bg-slate-100 rounded-2xl hover:bg-green-50 cursor-pointer transition-all border border-slate-200 hover:border-green-500/30 group">
+<div key={i} className="flex items-center justify-between p-5 bg-slate-100 rounded-2xl hover:bg-orange-50 cursor-pointer transition-all border border-slate-200 hover:border-orange-500/30 group">
                        <div className="flex items-center gap-4">
-                          <t.icon size={20} className="text-slate-500 group-hover:text-green-600 transition-colors" />
-                          <span className="font-black text-sm text-slate-700 group-hover:text-green-700 transition-colors">{t.title}</span>
+                          <t.icon size={20} className="text-slate-500 group-hover:text-orange-600 transition-colors" />
+                          <span className="font-black text-sm text-slate-700 group-hover:text-orange-700 transition-colors">{t.title}</span>
                       </div>
-                      <span className={`text-[10px] font-black uppercase px-3 py-1 rounded-full ${t.status === 'Активен' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-slate-500/10 text-slate-500'}`}>{t.status}</span>
+                      <span className={`text-[10px] font-black uppercase px-3 py-1 rounded-full ${t.status === 'Активен' ? 'bg-orange-500/10 text-orange-500' : 'bg-slate-500/10 text-slate-500'}`}>{t.status}</span>
                    </div>
                  ))}
               </div>
            </div>
 
-<div className="glass-panel p-10 rounded-[2.5rem] border border-slate-200 bg-gradient-to-tr from-green-600/5 to-transparent flex flex-col items-center justify-center text-center">
-               <div className="w-20 h-20 bg-green-600/10 rounded-full flex items-center justify-center mb-6 border border-green-500/20">
-                  <Send className="text-green-600" size={32} />
+<div className="glass-panel p-10 rounded-[2.5rem] border border-slate-200 bg-gradient-to-tr from-orange-600/5 to-transparent flex flex-col items-center justify-center text-center">
+                <div className="w-20 h-20 bg-orange-600/10 rounded-full flex items-center justify-center mb-6 border border-orange-500/20">
+                   <Send className="text-orange-600" size={32} />
               </div>
 <h4 className="header-font text-lg font-bold mb-4 text-slate-800">Ручная рассылка</h4>
                <p className="text-sm text-slate-600 max-w-xs mb-8">Отправьте мгновенное уведомление всем активным клиентам о спецпредложении или изменении графика.</p>

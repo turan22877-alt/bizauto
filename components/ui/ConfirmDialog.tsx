@@ -25,7 +25,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   type = 'danger'
 }) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={title} maxWidth="max-w-sm">
+    <Modal isOpen={isOpen} onClose={onClose} title={title} maxWidth="max-w-lg">
       <div className="space-y-6">
         <div className="flex items-start gap-4 p-4 bg-white/5 rounded-2xl border border-white/5">
           <AlertCircle className={type === 'danger' ? 'text-rose-500' : 'text-amber-500'} size={24} />

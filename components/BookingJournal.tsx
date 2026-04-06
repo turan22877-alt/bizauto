@@ -212,13 +212,13 @@ const BookingJournal: React.FC<BookingJournalProps> = ({
   };
 
   const statusColors = {
-    confirmed: 'bg-emerald-50 border-emerald-400 text-emerald-700',
+    confirmed: 'bg-orange-50 border-orange-400 text-orange-700',
     pending: 'bg-amber-50 border-amber-400 text-amber-700',
     cancelled: 'bg-stone-100 border-stone-300 text-stone-500',
   };
 
   const statusDot = {
-    confirmed: 'bg-emerald-500',
+    confirmed: 'bg-orange-500',
     pending: 'bg-amber-500',
     cancelled: 'bg-stone-400',
   };
@@ -254,7 +254,7 @@ const BookingJournal: React.FC<BookingJournalProps> = ({
                 key={mode}
                 onClick={() => setViewMode(mode)}
                 className={`px-4 py-1.5 text-xs font-semibold rounded-md transition-all ${
-                  viewMode === mode ? 'bg-green-600 text-white shadow-sm' : 'text-stone-500 hover:text-stone-700'
+                  viewMode === mode ? 'bg-orange-600 text-white shadow-sm' : 'text-stone-500 hover:text-stone-700'
                 }`}
               >
                 {mode === 'day' ? 'День' : mode === 'week' ? 'Неделя' : 'Месяц'}
@@ -274,7 +274,7 @@ const BookingJournal: React.FC<BookingJournalProps> = ({
                   key={s.id}
                   onClick={() => setSelectedStaffId(s.id)}
                   className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all whitespace-nowrap ${
-                    selectedStaffId === s.id ? 'bg-green-600 text-white' : 'text-stone-500 hover:text-stone-700'
+                    selectedStaffId === s.id ? 'bg-orange-600 text-white' : 'text-stone-500 hover:text-stone-700'
                   }`}
                 >
                   {s.name.split(' ')[0]}
@@ -290,7 +290,7 @@ const BookingJournal: React.FC<BookingJournalProps> = ({
               if (!clients.length) { alert('Сначала добавьте клиента в разделе «Клиенты»'); return; }
               openNewAppointment();
             }}
-            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 transition-colors shadow-sm"
+            className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white text-sm font-semibold rounded-lg hover:bg-orange-700 transition-colors shadow-sm"
           >
             <Plus size={16} />
             Запись
@@ -302,7 +302,7 @@ const BookingJournal: React.FC<BookingJournalProps> = ({
       {viewMode === 'day' && (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {[
-            { label: 'Записей', value: dayStats.total, icon: CalendarDays, color: 'text-green-600', bg: 'bg-green-50' },
+            { label: 'Записей', value: dayStats.total, icon: CalendarDays, color: 'text-orange-600', bg: 'bg-orange-50' },
             { label: 'Подтверждено', value: dayStats.confirmed, icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
             { label: 'Выручка', value: `${dayStats.revenue.toLocaleString()} ₽`, icon: DollarSign, color: 'text-amber-600', bg: 'bg-amber-50' },
             { label: 'Загрузка', value: `${dayStats.occupancy}%`, icon: TrendingUp, color: 'text-purple-600', bg: 'bg-purple-50' },
@@ -323,7 +323,7 @@ const BookingJournal: React.FC<BookingJournalProps> = ({
       {viewMode === 'month' && (
         <div className="grid grid-cols-3 gap-3">
           {[
-            { label: 'Записей за месяц', value: monthStats.total, icon: Calendar, color: 'text-green-600', bg: 'bg-green-50' },
+            { label: 'Записей за месяц', value: monthStats.total, icon: Calendar, color: 'text-orange-600', bg: 'bg-orange-50' },
             { label: 'Подтверждено', value: monthStats.confirmed, icon: CheckCircle2, color: 'text-blue-600', bg: 'bg-blue-50' },
             { label: 'Выручка', value: `${monthStats.revenue.toLocaleString()} ₽`, icon: DollarSign, color: 'text-amber-600', bg: 'bg-amber-50' },
           ].map((stat) => (
@@ -349,7 +349,7 @@ const BookingJournal: React.FC<BookingJournalProps> = ({
             placeholder="Поиск по клиенту или услуге..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100 transition-all placeholder:text-stone-400"
+            className="w-full pl-10 pr-4 py-2 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100 transition-all placeholder:text-stone-400"
           />
         </div>
         <div className="relative">
@@ -357,7 +357,7 @@ const BookingJournal: React.FC<BookingJournalProps> = ({
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
-            className="pl-10 pr-8 py-2 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-green-500 appearance-none cursor-pointer"
+            className="pl-10 pr-8 py-2 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-orange-500 appearance-none cursor-pointer"
           >
             <option value="all">Все статусы</option>
             <option value="pending">Ожидание</option>
@@ -389,12 +389,12 @@ const BookingJournal: React.FC<BookingJournalProps> = ({
               {hours.map((h, i) => (
                 <div
                   key={i}
-                  className="h-20 border-b border-stone-100 hover:bg-green-50/50 transition-colors cursor-pointer"
+                  className="h-20 border-b border-stone-100 hover:bg-orange-50/50 transition-colors cursor-pointer"
                   onClick={() => handleSlotClick(h)}
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={() => handleDrop(h, viewDate)}
                 >
-                  <div className="opacity-0 hover:opacity-100 transition-opacity text-xs text-green-600 font-medium p-2">
+                  <div className="opacity-0 hover:opacity-100 transition-opacity text-xs text-orange-600 font-medium p-2">
                     + Добавить
                   </div>
                 </div>
@@ -437,7 +437,7 @@ const BookingJournal: React.FC<BookingJournalProps> = ({
                     <div className="absolute -right-1 top-1/2 -translate-y-1/2 flex flex-col gap-1 z-30">
                       <button
                         onClick={(e) => { e.stopPropagation(); handleQuickStatus(app.id, 'confirmed'); }}
-                        className="w-7 h-7 bg-emerald-500 hover:bg-emerald-600 rounded-md flex items-center justify-center text-white shadow transition-colors"
+                        className="w-7 h-7 bg-orange-500 hover:bg-orange-600 rounded-md flex items-center justify-center text-white shadow transition-colors"
                         title="Подтвердить"
                       >
                         <CheckCircle2 size={12} />
@@ -477,17 +477,17 @@ const BookingJournal: React.FC<BookingJournalProps> = ({
                     <div
                       key={date}
                       className={`min-h-[90px] p-2 bg-white transition-colors cursor-pointer ${
-                        isToday ? 'bg-green-50 ring-2 ring-green-500 ring-inset' : 'hover:bg-stone-50'
+                        isToday ? 'bg-orange-50 ring-2 ring-orange-500 ring-inset' : 'hover:bg-stone-50'
                       } ${!isCurrentMonth ? 'opacity-30' : ''}`}
                       onClick={() => { setViewDate(date); setViewMode('day'); }}
                       onDoubleClick={(e) => { e.stopPropagation(); if (staff.length) openNewAppointment(date); }}
                     >
                       <div className="flex items-center justify-between mb-1">
-                        <span className={`text-sm font-bold ${isToday ? 'text-green-600' : 'text-stone-700'}`}>{dayNum}</span>
+                        <span className={`text-sm font-bold ${isToday ? 'text-orange-600' : 'text-stone-700'}`}>{dayNum}</span>
                         {isCurrentMonth && (
                           <button
                             onClick={(e) => { e.stopPropagation(); if (staff.length) openNewAppointment(date); }}
-                            className="w-5 h-5 rounded bg-green-100 hover:bg-green-200 flex items-center justify-center text-green-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                            className="w-5 h-5 rounded bg-orange-100 hover:bg-orange-200 flex items-center justify-center text-orange-600 opacity-0 group-hover:opacity-100 transition-opacity"
                             title="Добавить запись"
                           >
                             <Plus size={12} />
@@ -523,9 +523,9 @@ const BookingJournal: React.FC<BookingJournalProps> = ({
               const isToday = date === todayYmd;
 
               return (
-                <div key={date} className={`p-4 ${isToday ? 'bg-green-50/50' : ''}`}>
+                <div key={date} className={`p-4 ${isToday ? 'bg-orange-50/50' : ''}`}>
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className={`text-sm font-bold ${isToday ? 'text-green-600' : 'text-stone-700'}`}>
+                    <h3 className={`text-sm font-bold ${isToday ? 'text-orange-600' : 'text-stone-700'}`}>
                       {labelRuFromYMD(date)}
                     </h3>
                     <span className="text-xs text-stone-400">{dayApps.length} записей</span>
@@ -565,7 +565,7 @@ const BookingJournal: React.FC<BookingJournalProps> = ({
       </div>
 
       {/* Modal */}
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingAppointment ? 'Изменить запись' : 'Новая запись'}>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingAppointment ? 'Изменить запись' : 'Новая запись'} maxWidth="max-w-3xl">
         <form key={isModalOpen ? 'open' : 'closed'} onSubmit={handleSave} className="space-y-5">
           <div>
             <label className="block text-xs font-semibold text-stone-600 mb-1.5">Дата</label>
@@ -573,7 +573,7 @@ const BookingJournal: React.FC<BookingJournalProps> = ({
               name="date"
               type="date"
               defaultValue={editingAppointment?.date || viewDate}
-              className="w-full px-4 py-3 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100"
+              className="w-full px-4 py-3 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
               required
             />
           </div>
@@ -585,7 +585,7 @@ const BookingJournal: React.FC<BookingJournalProps> = ({
               <select
                 name="clientId"
                 defaultValue={editingAppointment?.clientId || ''}
-                className="w-full pl-10 pr-4 py-3 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100 appearance-none"
+                className="w-full pl-10 pr-4 py-3 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100 appearance-none"
                 required
               >
                 <option value="" disabled>Выберите клиента</option>
@@ -603,7 +603,7 @@ const BookingJournal: React.FC<BookingJournalProps> = ({
                   name="startTime"
                   type="time"
                   defaultValue={editingAppointment?.startTime || '10:00'}
-                  className="w-full pl-10 pr-4 py-3 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100"
+                  className="w-full pl-10 pr-4 py-3 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
                   required
                 />
               </div>
@@ -616,7 +616,7 @@ const BookingJournal: React.FC<BookingJournalProps> = ({
                 min={15}
                 step={15}
                 defaultValue={editingAppointment?.duration || 60}
-                className="w-full px-4 py-3 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100"
+                className="w-full px-4 py-3 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
                 required
               />
             </div>
@@ -631,7 +631,7 @@ const BookingJournal: React.FC<BookingJournalProps> = ({
                 type="text"
                 defaultValue={editingAppointment?.service || ''}
                 placeholder="Например: Стрижка"
-                className="w-full pl-10 pr-4 py-3 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100 placeholder:text-stone-400"
+                className="w-full pl-10 pr-4 py-3 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100 placeholder:text-stone-400"
                 required
               />
             </div>
@@ -645,7 +645,7 @@ const BookingJournal: React.FC<BookingJournalProps> = ({
                 type="number"
                 min={0}
                 defaultValue={editingAppointment?.price || 0}
-                className="w-full px-4 py-3 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100"
+                className="w-full px-4 py-3 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
                 required
               />
             </div>
@@ -654,7 +654,7 @@ const BookingJournal: React.FC<BookingJournalProps> = ({
               <select
                 name="status"
                 defaultValue={editingAppointment?.status || 'pending'}
-                className="w-full px-4 py-3 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100 appearance-none"
+                className="w-full px-4 py-3 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100 appearance-none"
               >
                 <option value="pending">Ожидание</option>
                 <option value="confirmed">Подтверждено</option>

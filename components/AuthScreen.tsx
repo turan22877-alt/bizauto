@@ -46,49 +46,53 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthed }) => {
   };
 
   return (
-    <div className="min-h-screen bg-midnight text-slate-200 flex items-center justify-center p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-stone-50 text-slate-700 flex items-center justify-center p-6 relative overflow-hidden">
       <AuthScene3D />
       <div className="pointer-events-none absolute inset-0 auth-aurora z-[1]" />
-      <div className="pointer-events-none absolute top-1/4 left-1/4 w-[520px] h-[520px] rounded-full bg-green-600/12 blur-[120px]" />
-      <div className="pointer-events-none absolute bottom-1/4 right-1/4 w-[420px] h-[420px] rounded-full bg-violet-600/10 blur-[100px]" />
+      <div className="pointer-events-none absolute top-1/4 left-1/4 w-[520px] h-[520px] rounded-full bg-orange-500/8 blur-[120px]" />
+      <div className="pointer-events-none absolute bottom-1/4 right-1/4 w-[420px] h-[420px] rounded-full bg-orange-600/6 blur-[100px]" />
 
-      <div className="w-full max-w-md relative z-20">
+      <div className="w-full max-w-[480px] mx-auto relative z-20 px-8">
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bugatti-gradient shadow-[0_0_40px_rgba(22,163,74,0.35)] mb-6 border border-white/10">
-            <span className="header-font text-xl font-black text-white">B</span>
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-black shadow-xl mb-6">
+            <span className="header-font text-3xl font-black text-orange-500">S</span>
           </div>
-          <h1 className="header-font text-2xl font-black text-slate-800 tracking-tight mb-2">BizAuto</h1>
-          <p className="text-sm text-slate-600 font-medium">Войдите или создайте аккаунт — данные хранятся локально в браузере</p>
+          <h1 className="header-font text-5xl font-black text-stone-900 tracking-tighter mb-3">Selliz</h1>
+          <p className="text-stone-500 font-medium">Ваш бизнес под контролем.</p>
         </div>
 
-        <div className="glass-panel rounded-[2rem] border border-slate-200 p-2 shadow-2xl">
-          <div className="flex rounded-[1.5rem] bg-slate-100 p-1 mb-8">
+        <div className="glass-panel rounded-[2rem] border border-slate-200 p-12 shadow-2xl w-full">
+          <div className="flex gap-4 mb-10">
             <button
               type="button"
               onClick={() => { setMode('login'); setError(''); }}
-              className={`flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-                mode === 'login' ? 'bg-green-600 text-white shadow-lg' : 'text-slate-600 hover:text-green-700'
+              className={`flex-1 flex items-center justify-center gap-3 py-5 rounded-2xl text-base font-bold transition-all border-2 ${
+                mode === 'login' 
+                  ? 'bg-orange-500 text-white border-orange-500 shadow-lg shadow-orange-500/25' 
+                  : 'bg-transparent text-slate-500 border-slate-200 hover:border-orange-300 hover:text-orange-600'
               }`}
             >
-              <LogIn size={16} /> Вход
+              <LogIn size={20} /> <span>Вход</span>
             </button>
             <button
               type="button"
               onClick={() => { setMode('register'); setError(''); }}
-              className={`flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-                mode === 'register' ? 'bg-green-600 text-white shadow-lg' : 'text-slate-600 hover:text-green-700'
+              className={`flex-1 flex items-center justify-center gap-3 py-5 rounded-2xl text-base font-bold transition-all border-2 ${
+                mode === 'register' 
+                  ? 'bg-orange-500 text-white border-orange-500 shadow-lg shadow-orange-500/25' 
+                  : 'bg-transparent text-slate-500 border-slate-200 hover:border-orange-300 hover:text-orange-600'
               }`}
             >
-              <UserPlus size={16} /> Регистрация
+              <UserPlus size={20} /> <span>Регистрация</span>
             </button>
           </div>
 
-          <form onSubmit={submit} className="px-6 pb-8 space-y-5">
+          <form onSubmit={submit} className="space-y-8">
             {mode === 'register' && (
               <>
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1 flex items-center gap-2">
-                    <User size={12} /> Имя
+                <div className="space-y-3">
+                  <label className="text-sm font-semibold text-stone-600 ml-1 flex items-center gap-2">
+                    <User size={16} /> Имя
                   </label>
                   <input
                     value={displayName}
@@ -98,9 +102,9 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthed }) => {
                     required={mode === 'register'}
                   />
                 </div>
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1 flex items-center gap-2">
-                    <Building2 size={12} /> Название бизнеса
+                <div className="space-y-3">
+                  <label className="text-sm font-semibold text-stone-600 ml-1 flex items-center gap-2">
+                    <Building2 size={16} /> Название бизнеса
                   </label>
                   <input
                     value={businessName}
@@ -111,9 +115,9 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthed }) => {
                 </div>
               </>
             )}
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1 flex items-center gap-2">
-                <Mail size={12} /> Email
+            <div className="space-y-3">
+              <label className="text-sm font-semibold text-stone-600 ml-1 flex items-center gap-2">
+                <Mail size={16} /> Email
               </label>
               <input
                 type="email"
@@ -125,9 +129,9 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthed }) => {
                 autoComplete="email"
               />
             </div>
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1 flex items-center gap-2">
-                <Lock size={12} /> Пароль
+            <div className="space-y-3">
+              <label className="text-sm font-semibold text-stone-600 ml-1 flex items-center gap-2">
+                <Lock size={16} /> Пароль
               </label>
               <input
                 type="password"
@@ -142,17 +146,17 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthed }) => {
             </div>
 
             {error && (
-              <p className="text-sm text-rose-400 font-medium bg-rose-500/10 border border-rose-500/20 rounded-xl px-4 py-3">{error}</p>
+              <p className="text-sm text-rose-500 font-medium bg-rose-50 border border-rose-100 rounded-xl px-4 py-3">{error}</p>
             )}
 
-            <Button type="submit" className="w-full py-4 mt-2" loading={loading}>
+            <Button type="submit" className="w-full py-5 mt-4 text-base bg-black hover:bg-stone-900" loading={loading}>
               {mode === 'register' ? 'Создать аккаунт' : 'Войти'}
             </Button>
           </form>
         </div>
 
-        <p className="text-center text-[11px] text-slate-500 mt-8 font-medium">
-          Регистрация не отправляет данные на сервер: пароль хэшируется и сохраняется только в этом браузере.
+        <p className="text-center text-xs text-stone-500 mt-8 font-medium">
+          Все данные хранятся локально в вашем браузере.
         </p>
       </div>
     </div>

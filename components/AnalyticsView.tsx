@@ -17,7 +17,7 @@ import Button from './ui/Button';
 import { Appointment, Client } from '../types';
 import { monthKey, monthLabelRu, parseAppointmentDate } from '../utils/appointmentsStats';
 
-const COLORS = ['#16a34a', '#22c55e', '#15803d', '#86efac', '#4ade80', '#818cf8', '#0ea5e9'];
+const COLORS = ['#f97316', '#ea580c', '#c2410c', '#fed7aa', '#fb923c', '#818cf8', '#0ea5e9'];
 
 function buildLast12Months(): { key: string; label: string }[] {
   const out: { key: string; label: string }[] = [];
@@ -127,7 +127,7 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({ appointments, clients }) 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
         <div className="glass-panel p-8 md:p-10 rounded-[2rem] border border-slate-200">
           <h3 className="header-font text-lg font-bold text-slate-800 mb-6 flex items-center gap-3">
-            <TableIcon className="text-green-600" /> Выручка по месяцам
+            <TableIcon className="text-orange-600" /> Выручка по месяцам
           </h3>
           <p className="text-xs text-slate-600 mb-4">Только подтверждённые записи, последние 12 месяцев</p>
           <div className="h-72">
@@ -172,7 +172,7 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({ appointments, clients }) 
 
         <div className="glass-panel p-8 md:p-10 rounded-[2rem] border border-slate-200">
           <h3 className="header-font text-lg font-bold text-slate-800 mb-6 flex items-center gap-3">
-            <Activity className="text-green-600" /> Записей по месяцам
+            <Activity className="text-orange-600" /> Записей по месяцам
           </h3>
           <p className="text-xs text-slate-600 mb-4">Все статусы, количество записей в календаре</p>
           <div className="h-72">
@@ -220,16 +220,18 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({ appointments, clients }) 
       </div>
 
       <div className="glass-panel p-10 md:p-12 rounded-[2.5rem] border border-slate-200 text-center relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-green-500/50 to-transparent" />
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-orange-500/50 to-transparent" />
         <h3 className="header-font text-2xl md:text-3xl font-black text-slate-800 mb-3 tracking-tight">Экспорт данных</h3>
-        <p className="text-slate-600 mb-8 max-w-lg mx-auto font-medium text-sm">
-          Скачайте CSV с агрегированной выручкой по месяцам или актуальным списком клиентов — без вымышленных полей.
+        <p className="text-slate-600 mb-8 max-w-2xl mx-auto font-medium text-sm leading-relaxed">
+          Скачайте CSV с агрегированной выручкой по месяцам или актуальным списком клиентов.
+          <br />
+          Экспортируются только реальные данные вашего аккаунта.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <Button variant="secondary" icon={<Download size={18} />} className="px-8" type="button" onClick={exportRevenueCsv}>
             CSV выручка
           </Button>
-          <Button variant="secondary" icon={<FileText size={18} className="text-green-600" />} className="px-8" type="button" onClick={exportClientsCsv}>
+            <Button variant="secondary" icon={<FileText size={18} className="text-orange-600" />} className="px-8" type="button" onClick={exportClientsCsv}>
             CSV клиенты
           </Button>
         </div>

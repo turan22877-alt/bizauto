@@ -20,7 +20,7 @@ const Button: React.FC<ButtonProps> = ({
   const baseStyles = "inline-flex items-center justify-center gap-2 font-semibold transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none";
 
   const variants = {
-    primary: "bg-green-600 hover:bg-green-700 text-white shadow-sm",
+    primary: "bg-orange-600 hover:bg-orange-700 text-white shadow-sm",
     secondary: "bg-white hover:bg-stone-50 text-stone-700 border border-stone-200",
     danger: "bg-red-600 hover:bg-red-700 text-white shadow-sm",
     ghost: "bg-transparent hover:bg-stone-100 text-stone-500 hover:text-stone-700"

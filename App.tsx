@@ -226,7 +226,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="flex min-h-screen bg-stone-100 text-stone-700 font-sans selection:bg-green-200">
+    <div className="flex min-h-screen bg-stone-100 text-stone-700 font-sans selection:bg-orange-200">
       <Sidebar
         activeSection={activeSection}
         onSectionChange={setActiveSection}
@@ -249,8 +249,8 @@ const App: React.FC = () => {
           pendingAppointmentsCount={pendingAppointmentsCount}
           onMenuClick={() => setMobileMenuOpen(true)}
         />
-        <main className="flex-1 p-3 sm:p-4 md:p-6 lg:p-8 overflow-y-auto custom-scrollbar">
-          <div className="max-w-7xl mx-auto animate-fade-in">{renderContent()}</div>
+        <main className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto custom-scrollbar">
+          <div className="animate-fade-in">{renderContent()}</div>
         </main>
         <SettingsModal
           isOpen={settingsOpen}

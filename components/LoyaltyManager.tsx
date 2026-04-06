@@ -17,8 +17,8 @@ const LoyaltyManager: React.FC<{ clients: Client[], onUpdateClients: (cs: Client
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
            {[
              { label: 'VIP Status', icon: Award, count: clients.filter(c => c.status === 'VIP').length, color: 'text-amber-500', bg: 'bg-amber-500/10' },
-             { label: 'Баллы на счетах', icon: Star, count: clients.reduce((s, c) => s + (c.points || 0), 0), color: 'text-green-600', bg: 'bg-green-500/10' },
-             { label: 'Клиенты с баллами', icon: Gift, count: clients.filter(c => (c.points || 0) > 0).length, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+             { label: 'Баллы на счетах', icon: Star, count: clients.reduce((s, c) => s + (c.points || 0), 0), color: 'text-orange-600', bg: 'bg-orange-500/10' },
+             { label: 'Клиенты с баллами', icon: Gift, count: clients.filter(c => (c.points || 0) > 0).length, color: 'text-orange-500', bg: 'bg-orange-500/10' },
            ].map((box, i) => (
              <div key={i} className="glass-panel p-10 rounded-[2.5rem] border border-slate-200 relative overflow-hidden group">
                 <div className={`absolute -top-10 -right-10 w-32 h-32 ${box.bg} rounded-full blur-3xl opacity-50 group-hover:opacity-100 transition-opacity`}></div>
@@ -44,12 +44,12 @@ const LoyaltyManager: React.FC<{ clients: Client[], onUpdateClients: (cs: Client
               </thead>
               <tbody className="divide-y divide-slate-200">
                  {clients.length > 0 ? clients.map(c => (
-                   <tr key={c.id} className="hover:bg-green-50 transition-colors group">
+                   <tr key={c.id} className="hover:bg-orange-50 transition-colors group">
                       <td className="px-10 py-8 font-black text-slate-800 tracking-tight">{c.name}</td>
                       <td className="px-10 py-8">
 <div className="flex items-center gap-2">
-                             <Star size={14} className="text-green-600" />
-                             <span className="text-green-600 font-black text-lg">{c.points || 0}</span>
+                              <Star size={14} className="text-orange-600" />
+                              <span className="text-orange-600 font-black text-lg">{c.points || 0}</span>
                          </div>
                       </td>
                       <td className="px-10 py-8 uppercase text-[10px] font-black">

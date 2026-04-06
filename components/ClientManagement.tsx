@@ -52,7 +52,7 @@ const ClientManagement: React.FC<ClientManagementProps> = ({ clients, onUpdateCl
     <div className="space-y-10">
       <div className="flex justify-between items-end">
         <div>
-          <h2 className="header-font text-4xl font-black text-slate-800 mb-2">Client Database</h2>
+          <h2 className="header-font text-4xl font-black text-slate-800 mb-2">Клиенты</h2>
           <p className="text-slate-600 font-medium">Управление базой клиентов и историей взаимодействий</p>
         </div>
         <Button 
@@ -71,7 +71,7 @@ const ClientManagement: React.FC<ClientManagementProps> = ({ clients, onUpdateCl
             placeholder="Поиск по имени или телефону..." 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-14 pr-6 py-4 bg-slate-100 border border-slate-200 rounded-2xl text-sm font-medium text-slate-800 focus:outline-none focus:border-green-500/50 transition-all placeholder:text-slate-500"
+            className="w-full pl-14 pr-6 py-4 bg-slate-100 border border-slate-200 rounded-2xl text-sm font-medium text-slate-800 focus:outline-none focus:border-orange-500/50 transition-all placeholder:text-slate-500"
           />
         </div>
       </div>
@@ -91,10 +91,10 @@ const ClientManagement: React.FC<ClientManagementProps> = ({ clients, onUpdateCl
             </thead>
             <tbody className="divide-y divide-slate-200">
               {filteredClients.length > 0 ? filteredClients.map((client) => (
-                <tr key={client.id} className="hover:bg-green-50 transition-colors group">
+                <tr key={client.id} className="hover:bg-orange-50 transition-colors group">
                   <td className="px-8 py-6">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-green-600/10 border border-green-500/20 rounded-2xl flex items-center justify-center text-green-600 font-black text-lg">
+                      <div className="w-12 h-12 bg-orange-600/10 border border-orange-500/20 rounded-2xl flex items-center justify-center text-orange-600 font-black text-lg">
                         {client.name.charAt(0)}
                       </div>
                       <span className="font-black text-slate-800 tracking-tight">{client.name}</span>
@@ -103,7 +103,7 @@ const ClientManagement: React.FC<ClientManagementProps> = ({ clients, onUpdateCl
                   <td className="px-8 py-6">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
-                        <Phone size={12} className="text-green-600" /> {client.phone}
+                        <Phone size={12} className="text-orange-600" /> {client.phone}
                       </div>
                       <div className="flex items-center gap-2 text-[10px] text-slate-600 font-medium">
                         <Mail size={12} /> {client.email || '—'}
@@ -111,7 +111,7 @@ const ClientManagement: React.FC<ClientManagementProps> = ({ clients, onUpdateCl
                     </div>
                   </td>
                   <td className="px-8 py-6 text-center">
-                    <span className="text-xs font-black text-green-600 bg-green-500/10 px-3 py-1 rounded-lg">{client.visits}</span>
+                    <span className="text-xs font-black text-orange-600 bg-orange-500/10 px-3 py-1 rounded-lg">{client.visits}</span>
                   </td>
                   <td className="px-8 py-6">
                     <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
@@ -121,8 +121,8 @@ const ClientManagement: React.FC<ClientManagementProps> = ({ clients, onUpdateCl
                   <td className="px-8 py-6">
                     <span className={`inline-flex px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${
                       client.status === 'VIP' ? 'bg-amber-500/20 text-amber-500' :
-                      client.status === 'Active' ? 'bg-emerald-500/20 text-emerald-500' :
-                      client.status === 'New' ? 'bg-green-500/15 text-green-600' :
+                      client.status === 'Active' ? 'bg-orange-500/20 text-orange-500' :
+                      client.status === 'New' ? 'bg-orange-500/15 text-orange-600' :
                       'bg-slate-100 text-slate-600'
                     }`}>
                       {client.status}
@@ -147,23 +147,24 @@ const ClientManagement: React.FC<ClientManagementProps> = ({ clients, onUpdateCl
         </div>
       </div>
 
-      <Modal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        title="Contract New Client"
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Новый клиент"
+        maxWidth="max-w-3xl"
       >
         <form onSubmit={handleAddClient} className="space-y-6">
           <div className="space-y-1">
             <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1">Имя и фамилия</label>
-            <input name="name" type="text" placeholder="Иван Иванов" className="w-full px-5 py-4 bg-slate-100 border border-slate-200 rounded-2xl text-sm font-medium text-slate-800 focus:outline-none focus:border-green-500/50 transition-all" required />
+            <input name="name" type="text" placeholder="Иван Иванов" className="w-full px-5 py-4 bg-slate-100 border border-slate-200 rounded-2xl text-sm font-medium text-slate-800 focus:outline-none focus:border-orange-500/50 transition-all" required />
           </div>
           <div className="space-y-1">
             <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1">Телефон</label>
-            <input name="phone" type="tel" placeholder="+7 (900) 000-00-00" className="w-full px-5 py-4 bg-slate-100 border border-slate-200 rounded-2xl text-sm font-medium text-slate-800 focus:outline-none focus:border-green-500/50 transition-all" required />
+            <input name="phone" type="tel" placeholder="+7 (900) 000-00-00" className="w-full px-5 py-4 bg-slate-100 border border-slate-200 rounded-2xl text-sm font-medium text-slate-800 focus:outline-none focus:border-orange-500/50 transition-all" required />
           </div>
           <div className="space-y-1">
             <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1">Email (опционально)</label>
-            <input name="email" type="email" placeholder="client@example.com" className="w-full px-5 py-4 bg-slate-100 border border-slate-200 rounded-2xl text-sm font-medium text-slate-800 focus:outline-none focus:border-green-500/50 transition-all" />
+            <input name="email" type="email" placeholder="client@example.com" className="w-full px-5 py-4 bg-slate-100 border border-slate-200 rounded-2xl text-sm font-medium text-slate-800 focus:outline-none focus:border-orange-500/50 transition-all" />
           </div>
           <Button type="submit" className="w-full py-5 mt-4">
             Добавить в базу
@@ -175,7 +176,7 @@ const ClientManagement: React.FC<ClientManagementProps> = ({ clients, onUpdateCl
         isOpen={!!confirmDeleteId}
         onClose={() => setConfirmDeleteId(null)}
         onConfirm={handleDeleteClient}
-        title="Terminate Relationship"
+        title="Удаление клиента"
         message="Вы уверены, что хотите удалить этого клиента из базы данных? Это действие необратимо."
         confirmText="Удалить"
         cancelText="Отмена"
