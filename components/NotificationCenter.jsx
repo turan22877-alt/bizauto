@@ -38,7 +38,7 @@ const NotificationCenter = () => {
                    <Send className="text-orange-600" size={32} />
               </div>
 <h4 className="header-font text-lg font-bold mb-4 text-slate-800">Ручная рассылка</h4>
-               <p className="text-sm text-slate-600 max-w-xs mb-8">Отправьте мгновенное уведомление всем активным клиентам о спецпредложении или изменении графика.</p>
+               <p className="text-sm text-slate-600 max-w-sm mb-8">Отправьте мгновенное уведомление всем активным клиентам о спецпредложении или изменении графика.</p>
               <Button
                 variant="primary"
                 className="px-10 py-4"
