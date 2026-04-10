@@ -1,13 +1,13 @@
-import React, { useEffect, useRef } from 'react';
-import { mountBizScene } from './mountBizScene';
+import React, { useEffect, useRef } from "react";
+import { mountBizScene } from "./mountBizScene";
 
-const DashboardHero3D = ({ className = '' }) => {
+const DashboardHero3D = ({ className = "" }) => {
   const ref = useRef(null);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    return mountBizScene(el, 'dashboard');
+    return mountBizScene(el, "dashboard");
   }, []);
 
   return (

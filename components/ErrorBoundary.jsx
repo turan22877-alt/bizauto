@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { AlertTriangle, RefreshCw } from 'lucide-react';
+import React, { Component } from "react";
+import { AlertTriangle, RefreshCw } from "lucide-react";
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -12,7 +12,7 @@ class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
+    console.error("ErrorBoundary caught an error:", error, errorInfo);
   }
 
   handleReset = () => {
@@ -35,7 +35,8 @@ class ErrorBoundary extends Component {
               Что-то пошло не так
             </h2>
             <p className="text-stone-600 mb-6">
-              Произошла ошибка при загрузке приложения. Попробуйте обновить страницу.
+              Произошла ошибка при загрузке приложения. Попробуйте обновить
+              страницу.
             </p>
             {this.state.error && (
               <details className="text-left mb-6 p-4 bg-stone-100 rounded-lg text-sm">

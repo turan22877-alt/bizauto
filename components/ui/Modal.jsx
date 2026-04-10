@@ -1,8 +1,14 @@
-import React from 'react';
-import { X } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import React from "react";
+import { X } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 
-const Modal = ({ isOpen, onClose, title, children, maxWidth = 'max-w-3xl' }) => {
+const Modal = ({
+  isOpen,
+  onClose,
+  title,
+  children,
+  maxWidth = "max-w-3xl",
+}) => {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -18,11 +24,13 @@ const Modal = ({ isOpen, onClose, title, children, maxWidth = 'max-w-3xl' }) => 
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
             className={`bg-white w-full ${maxWidth} rounded-2xl border border-stone-200 p-6 sm:p-8 relative z-10 shadow-2xl max-h-[90vh] overflow-y-auto`}
           >
             <div className="flex justify-between items-center mb-6 sm:mb-8">
-              <h3 className="text-lg sm:text-xl font-bold text-stone-800">{title}</h3>
+              <h3 className="text-lg sm:text-xl font-bold text-stone-800">
+                {title}
+              </h3>
               <button
                 onClick={onClose}
                 className="p-1.5 text-stone-400 hover:text-stone-600 hover:bg-stone-100 rounded-lg transition-all"

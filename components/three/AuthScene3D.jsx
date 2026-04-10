@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { mountBizScene } from './mountBizScene';
+import React, { useEffect, useRef } from "react";
+import { mountBizScene } from "./mountBizScene";
 
 const AuthScene3D = () => {
   const ref = useRef(null);
@@ -7,7 +7,7 @@ const AuthScene3D = () => {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    return mountBizScene(el, 'auth');
+    return mountBizScene(el, "auth");
   }, []);
 
   return (

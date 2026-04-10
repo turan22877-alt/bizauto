@@ -1,24 +1,24 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { AppSection } from './types';
-import Sidebar from './components/Sidebar';
-import Header from './components/Header';
-import Dashboard from './components/Dashboard';
-import BookingJournal from './components/BookingJournal';
-import ClientManagement from './components/ClientManagement';
-import StaffManagement from './components/StaffManagement';
-import InventoryManager from './components/InventoryManager';
-import FinancialStats from './components/FinancialStats';
-import LoyaltyManager from './components/LoyaltyManager';
-import NotificationCenter from './components/NotificationCenter';
-import AnalyticsView from './components/AnalyticsView';
-import PayrollCalculator from './components/PayrollCalculator';
-import AuthScreen from './components/AuthScreen';
-import SettingsModal from './components/SettingsModal';
-import Toast from './components/ui/Toast';
-import { getSession, logoutUser, updateUserProfile } from './utils/auth';
-import { migrateLegacyOwner, scopeByOwner } from './utils/migrate';
-import { debouncedSave, loadFromStorage, flushAllSaves } from './utils/storage';
-import { useToast } from './hooks/useToast';
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { AppSection } from "./types";
+import Sidebar from "./components/Sidebar";
+import Header from "./components/Header";
+import Dashboard from "./components/Dashboard";
+import BookingJournal from "./components/BookingJournal";
+import ClientManagement from "./components/ClientManagement";
+import StaffManagement from "./components/StaffManagement";
+import InventoryManager from "./components/InventoryManager";
+import FinancialStats from "./components/FinancialStats";
+import LoyaltyManager from "./components/LoyaltyManager";
+import NotificationCenter from "./components/NotificationCenter";
+import AnalyticsView from "./components/AnalyticsView";
+import PayrollCalculator from "./components/PayrollCalculator";
+import AuthScreen from "./components/AuthScreen";
+import SettingsModal from "./components/SettingsModal";
+import Toast from "./components/ui/Toast";
+import { getSession, logoutUser, updateUserProfile } from "./utils/auth";
+import { migrateLegacyOwner, scopeByOwner } from "./utils/migrate";
+import { debouncedSave, loadFromStorage, flushAllSaves } from "./utils/storage";
+import { useToast } from "./hooks/useToast";
 
 const App = () => {
   const [user, setUser] = useState(() => getSession());
@@ -28,38 +28,64 @@ const App = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { toasts, removeToast, success, error } = useToast();
 
-  const [clientsAll, setClientsAll] = useState(() => loadFromStorage('b_clients', []));
-  const [staffAll, setStaffAll] = useState(() => loadFromStorage('b_staff', []));
-  const [appointmentsAll, setAppointmentsAll] = useState(() => loadFromStorage('b_appointments', []));
-  const [inventoryAll, setInventoryAll] = useState(() => loadFromStorage('b_inventory', []));
+  const [clientsAll, setClientsAll] = useState(() =>
+    loadFromStorage("b_clients", []),
+  );
+  const [staffAll, setStaffAll] = useState(() =>
+    loadFromStorage("b_staff", []),
+  );
+  const [appointmentsAll, setAppointmentsAll] = useState(() =>
+    loadFromStorage("b_appointments", []),
+  );
+  const [inventoryAll, setInventoryAll] = useState(() =>
+    loadFromStorage("b_inventory", []),
+  );
 
-  const ownerUid = user?.uid ?? '';
+  const ownerUid = user?.uid ?? "";
 
-  const clients = useMemo(() => scopeByOwner(clientsAll, ownerUid), [clientsAll, ownerUid]);
-  const staff = useMemo(() => scopeByOwner(staffAll, ownerUid), [staffAll, ownerUid]);
-  const appointments = useMemo(() => scopeByOwner(appointmentsAll, ownerUid), [appointmentsAll, ownerUid]);
-  const inventory = useMemo(() => scopeByOwner(inventoryAll, ownerUid), [inventoryAll, ownerUid]);
+  const clients = useMemo(
+    () => scopeByOwner(clientsAll, ownerUid),
+    [clientsAll, ownerUid],
+  );
+  const staff = useMemo(
+    () => scopeByOwner(staffAll, ownerUid),
+    [staffAll, ownerUid],
+  );
+  const appointments = useMemo(
+    () => scopeByOwner(appointmentsAll, ownerUid),
+    [appointmentsAll, ownerUid],
+  );
+  const inventory = useMemo(
+    () => scopeByOwner(inventoryAll, ownerUid),
+    [inventoryAll, ownerUid],
+  );
 
   const setClients = useCallback(
     (updater) => {
       setClientsAll((prev) => {
         const rest = prev.filter((c) => c.ownerUid !== ownerUid);
-        const next = typeof updater === 'function' ? updater(scopeByOwner(prev, ownerUid)) : updater;
+        const next =
+          typeof updater === "function"
+            ? updater(scopeByOwner(prev, ownerUid))
+            : updater;
         return [...rest, ...next];
       });
     },
-    [ownerUid]
+    [ownerUid],
   );
 
   const setStaff = useCallback(
     (updater) => {
       setStaffAll((prev) => {
         const rest = prev.filter((s) => s.ownerUid !== ownerUid);
-        const next = typeof updater === 'function' ? updater(scopeByOwner(prev, ownerUid)) : updater;
+        const next =
+          typeof updater === "function"
+            ? updater(scopeByOwner(prev, ownerUid))
+            : updater;
         return [...rest, ...next];
       });
     },
-    [ownerUid]
+    [ownerUid],
   );
 
   const setAppointments = useCallback(
@@ -67,13 +93,13 @@ const App = () => {
       setAppointmentsAll((prev) => {
         const rest = prev.filter((a) => a.ownerUid !== ownerUid);
         const next =
-          typeof updater === 'function'
+          typeof updater === "function"
             ? updater(scopeByOwner(prev, ownerUid))
             : updater;
         return [...rest, ...next];
       });
     },
-    [ownerUid]
+    [ownerUid],
   );
 
   const setInventory = useCallback(
@@ -81,23 +107,28 @@ const App = () => {
       setInventoryAll((prev) => {
         const rest = prev.filter((i) => i.ownerUid !== ownerUid);
         const next =
-          typeof updater === 'function' ? updater(scopeByOwner(prev, ownerUid)) : updater;
+          typeof updater === "function"
+            ? updater(scopeByOwner(prev, ownerUid))
+            : updater;
         return [...rest, ...next];
       });
     },
-    [ownerUid]
+    [ownerUid],
   );
 
-  useEffect(() => debouncedSave('b_clients', clientsAll), [clientsAll]);
-  useEffect(() => debouncedSave('b_staff', staffAll), [staffAll]);
-  useEffect(() => debouncedSave('b_appointments', appointmentsAll), [appointmentsAll]);
-  useEffect(() => debouncedSave('b_inventory', inventoryAll), [inventoryAll]);
+  useEffect(() => debouncedSave("b_clients", clientsAll), [clientsAll]);
+  useEffect(() => debouncedSave("b_staff", staffAll), [staffAll]);
+  useEffect(
+    () => debouncedSave("b_appointments", appointmentsAll),
+    [appointmentsAll],
+  );
+  useEffect(() => debouncedSave("b_inventory", inventoryAll), [inventoryAll]);
 
   // Flush all pending saves before page unload
   useEffect(() => {
     const handleBeforeUnload = () => flushAllSaves();
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, []);
 
   const handleAuthed = (profile, opts) => {
@@ -116,13 +147,14 @@ const App = () => {
   };
 
   const pendingAppointmentsCount = useMemo(
-    () => appointments.filter((a) => a.status === 'pending').length,
-    [appointments]
+    () => appointments.filter((a) => a.status === "pending").length,
+    [appointments],
   );
 
   const onNavigate = useCallback((section, detail) => {
     setActiveSection(section);
-    if (detail?.appointmentId) setFocusRequest({ appointmentId: detail.appointmentId });
+    if (detail?.appointmentId)
+      setFocusRequest({ appointmentId: detail.appointmentId });
   }, []);
 
   const onFocusConsumed = useCallback(() => setFocusRequest(null), []);
@@ -144,17 +176,29 @@ const App = () => {
       if (!user) return;
       try {
         const uid = user.uid;
-        setClientsAll((prev) => [...prev.filter((c) => c.ownerUid !== uid), ...payload.clients]);
-        setStaffAll((prev) => [...prev.filter((s) => s.ownerUid !== uid), ...payload.staff]);
-        setAppointmentsAll((prev) => [...prev.filter((a) => a.ownerUid !== uid), ...payload.appointments]);
-        setInventoryAll((prev) => [...prev.filter((i) => i.ownerUid !== uid), ...payload.inventory]);
-        success('Резервная копия успешно импортирована');
+        setClientsAll((prev) => [
+          ...prev.filter((c) => c.ownerUid !== uid),
+          ...payload.clients,
+        ]);
+        setStaffAll((prev) => [
+          ...prev.filter((s) => s.ownerUid !== uid),
+          ...payload.staff,
+        ]);
+        setAppointmentsAll((prev) => [
+          ...prev.filter((a) => a.ownerUid !== uid),
+          ...payload.appointments,
+        ]);
+        setInventoryAll((prev) => [
+          ...prev.filter((i) => i.ownerUid !== uid),
+          ...payload.inventory,
+        ]);
+        success("Резервная копия успешно импортирована");
       } catch (err) {
-        error('Ошибка при импорте резервной копии');
+        error("Ошибка при импорте резервной копии");
         console.error(err);
       }
     },
-    [user, success, error]
+    [user, success, error],
   );
 
   const handleSaveProfile = useCallback(
@@ -168,20 +212,26 @@ const App = () => {
         });
         if (next) {
           setUser(next);
-          success('Профиль успешно обновлен');
+          success("Профиль успешно обновлен");
         }
       } catch (err) {
-        error('Ошибка при обновлении профиля');
+        error("Ошибка при обновлении профиля");
         console.error(err);
       }
     },
-    [user, success, error]
+    [user, success, error],
   );
 
   const renderContent = () => {
     switch (activeSection) {
       case AppSection.DASHBOARD:
-        return <Dashboard clients={clients} appointments={appointments} onNavigate={(s) => setActiveSection(s)} />;
+        return (
+          <Dashboard
+            clients={clients}
+            appointments={appointments}
+            onNavigate={(s) => setActiveSection(s)}
+          />
+        );
       case AppSection.BOOKING_JOURNAL:
         return (
           <BookingJournal
@@ -195,15 +245,35 @@ const App = () => {
           />
         );
       case AppSection.CLIENTS:
-        return <ClientManagement clients={clients} onUpdateClients={setClients} ownerUid={ownerUid} />;
+        return (
+          <ClientManagement
+            clients={clients}
+            onUpdateClients={setClients}
+            ownerUid={ownerUid}
+          />
+        );
       case AppSection.STAFF:
-        return <StaffManagement staff={staff} onUpdateStaff={setStaff} ownerUid={ownerUid} />;
+        return (
+          <StaffManagement
+            staff={staff}
+            onUpdateStaff={setStaff}
+            ownerUid={ownerUid}
+          />
+        );
       case AppSection.INVENTORY:
-        return <InventoryManager inventory={inventory} onUpdateInventory={setInventory} ownerUid={ownerUid} />;
+        return (
+          <InventoryManager
+            inventory={inventory}
+            onUpdateInventory={setInventory}
+            ownerUid={ownerUid}
+          />
+        );
       case AppSection.FINANCE:
         return <FinancialStats appointments={appointments} />;
       case AppSection.LOYALTY:
-        return <LoyaltyManager clients={clients} onUpdateClients={setClients} />;
+        return (
+          <LoyaltyManager clients={clients} onUpdateClients={setClients} />
+        );
       case AppSection.NOTIFICATIONS:
         return <NotificationCenter />;
       case AppSection.ANALYTICS:

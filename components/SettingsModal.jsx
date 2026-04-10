@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Download, Upload, X, User, Building, Coins, Save } from 'lucide-react';
-import Modal from './ui/Modal';
-import Button from './ui/Button';
-import { CURRENCY_NAMES } from '../types';
+import React, { useState, useRef, useEffect } from "react";
+import { Download, Upload, X, User, Building, Coins, Save } from "lucide-react";
+import Modal from "./ui/Modal";
+import Button from "./ui/Button";
+import { CURRENCY_NAMES } from "../types";
 
 const SettingsModal = ({
   isOpen,
@@ -13,27 +13,29 @@ const SettingsModal = ({
   buildBackup,
 }) => {
   const [displayName, setDisplayName] = useState(user.displayName);
-  const [businessName, setBusinessName] = useState(user.businessName || '');
-  const [currency, setCurrency] = useState(user.currency || 'RUB');
-  const [importError, setImportError] = useState('');
+  const [businessName, setBusinessName] = useState(user.businessName || "");
+  const [currency, setCurrency] = useState(user.currency || "RUB");
+  const [importError, setImportError] = useState("");
   const [saved, setSaved] = useState(false);
   const fileRef = useRef(null);
 
   useEffect(() => {
     if (isOpen) {
       setDisplayName(user.displayName);
-      setBusinessName(user.businessName || '');
-      setCurrency(user.currency || 'RUB');
-      setImportError('');
+      setBusinessName(user.businessName || "");
+      setCurrency(user.currency || "RUB");
+      setImportError("");
       setSaved(false);
     }
   }, [isOpen, user]);
 
   const handleExport = () => {
     const data = buildBackup();
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify(data, null, 2)], {
+      type: "application/json",
+    });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
     a.download = `selliz-backup-${user.uid.slice(0, 8)}-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
@@ -43,24 +45,30 @@ const SettingsModal = ({
   const handleFile = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setImportError('');
+    setImportError("");
     const reader = new FileReader();
     reader.onload = () => {
       try {
         const raw = reader.result;
         const j = JSON.parse(raw);
-        if (j.version !== 1 || !Array.isArray(j.clients) || j.ownerUid !== user.uid) {
-          setImportError('Файл не подходит: нужен бэкап этой же учётной записи (version 1).');
+        if (
+          j.version !== 1 ||
+          !Array.isArray(j.clients) ||
+          j.ownerUid !== user.uid
+        ) {
+          setImportError(
+            "Файл не подходит: нужен бэкап этой же учётной записи (version 1).",
+          );
           return;
         }
         onImportBackup(j);
         onClose();
       } catch {
-        setImportError('Не удалось прочитать JSON.');
+        setImportError("Не удалось прочитать JSON.");
       }
     };
-    reader.readAsText(file, 'UTF-8');
-    e.target.value = '';
+    reader.readAsText(file, "UTF-8");
+    e.target.value = "";
   };
 
   const handleSave = () => {
@@ -70,9 +78,13 @@ const SettingsModal = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Настройки" maxWidth="max-w-3xl">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Настройки"
+      maxWidth="max-w-3xl"
+    >
       <div className="space-y-6">
-
         {/* Profile Section */}
         <div className="bg-stone-50 rounded-2xl p-6 border border-stone-200">
           <div className="flex items-center gap-3 mb-5">
@@ -84,7 +96,9 @@ const SettingsModal = ({
 
           <div className="space-y-4">
             <div>
-              <label className="text-xs font-semibold text-stone-500 mb-1.5 block">Отображаемое имя</label>
+              <label className="text-xs font-semibold text-stone-500 mb-1.5 block">
+                Отображаемое имя
+              </label>
               <input
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
@@ -94,9 +108,14 @@ const SettingsModal = ({
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-stone-500 mb-1.5 block">Название бизнеса</label>
+              <label className="text-xs font-semibold text-stone-500 mb-1.5 block">
+                Название бизнеса
+              </label>
               <div className="relative">
-                <Building className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" size={16} />
+                <Building
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400"
+                  size={16}
+                />
                 <input
                   value={businessName}
                   onChange={(e) => setBusinessName(e.target.value)}
@@ -107,9 +126,14 @@ const SettingsModal = ({
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-stone-500 mb-1.5 block">Валюта</label>
+              <label className="text-xs font-semibold text-stone-500 mb-1.5 block">
+                Валюта
+              </label>
               <div className="relative">
-                <Coins className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" size={16} />
+                <Coins
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400"
+                  size={16}
+                />
                 <select
                   value={currency}
                   onChange={(e) => setCurrency(e.target.value)}
@@ -130,7 +154,7 @@ const SettingsModal = ({
               onClick={handleSave}
               icon={<Save size={16} />}
             >
-              {saved ? 'Сохранено!' : 'Сохранить'}
+              {saved ? "Сохранено!" : "Сохранить"}
             </Button>
           </div>
         </div>
@@ -142,13 +166,23 @@ const SettingsModal = ({
               <Download size={20} className="text-orange-600" />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-stone-800">Резервное копирование</h4>
-              <p className="text-xs text-stone-500 mt-0.5">Экспорт и импорт данных вашего аккаунта</p>
+              <h4 className="text-sm font-bold text-stone-800">
+                Резервное копирование
+              </h4>
+              <p className="text-xs text-stone-500 mt-0.5">
+                Экспорт и импорт данных вашего аккаунта
+              </p>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <Button type="button" variant="secondary" className="w-full" icon={<Download size={16} />} onClick={handleExport}>
+            <Button
+              type="button"
+              variant="secondary"
+              className="w-full"
+              icon={<Download size={16} />}
+              onClick={handleExport}
+            >
               Скачать
             </Button>
             <Button
@@ -160,11 +194,19 @@ const SettingsModal = ({
             >
               Импорт
             </Button>
-            <input ref={fileRef} type="file" accept="application/json,.json" className="hidden" onChange={handleFile} />
+            <input
+              ref={fileRef}
+              type="file"
+              accept="application/json,.json"
+              className="hidden"
+              onChange={handleFile}
+            />
           </div>
 
           {importError && (
-            <p className="mt-3 text-sm text-rose-500 bg-rose-50 border border-rose-200 rounded-xl px-4 py-3">{importError}</p>
+            <p className="mt-3 text-sm text-rose-500 bg-rose-50 border border-rose-200 rounded-xl px-4 py-3">
+              {importError}
+            </p>
           )}
         </div>
 
