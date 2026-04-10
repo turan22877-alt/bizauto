@@ -1,0 +1,25 @@
+export const AppSection = {
+  DASHBOARD: 'DASHBOARD',
+  BOOKING_JOURNAL: 'BOOKING_JOURNAL',
+  CLIENTS: 'CLIENTS',
+  STAFF: 'STAFF',
+  INVENTORY: 'INVENTORY',
+  FINANCE: 'FINANCE',
+  ANALYTICS: 'ANALYTICS',
+  LOYALTY: 'LOYALTY',
+  PAYROLL: 'PAYROLL',
+  NOTIFICATIONS: 'NOTIFICATIONS',
+  INTEGRATIONS: 'INTEGRATIONS'
+};
+
+export const CURRENCY_SYMBOLS = {
+  RUB: '₽',
+  USD: '$',
+  AZN: '₼'
+};
+
+export const CURRENCY_NAMES = {
+  RUB: 'Российский рубль',
+  USD: 'Доллар США',
+  AZN: 'Азербайджанский манат'
+};

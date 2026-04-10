@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep \"^D.*\\\\.tsx\\\\?$\")",
+      "Bash(ls -la *.ts *.tsx)",
+      "Bash(git add:*)"
+    ]
+  }
+}
