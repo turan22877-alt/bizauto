@@ -270,11 +270,8 @@ const AnalyticsView = ({ appointments, clients }) => {
         <h3 className="header-font text-2xl md:text-3xl font-black text-slate-800 mb-3 tracking-tight">
           Экспорт данных
         </h3>
-        <p className="text-slate-600 mb-8 max-w-2xl mx-auto font-medium text-sm leading-relaxed">
-          Скачайте CSV с агрегированной выручкой по месяцам или актуальным
-          списком клиентов.
-          <br />
-          Экспортируются только реальные данные вашего аккаунта.
+        <p className="text-slate-600 mb-8 mx-auto font-medium text-sm leading-relaxed px-4">
+          Скачайте CSV с агрегированной выручкой по месяцам или актуальным списком клиентов. Экспортируются только реальные данные вашего аккаунта.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <Button
