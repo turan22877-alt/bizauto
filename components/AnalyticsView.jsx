@@ -13,7 +13,7 @@ import {
 } from 'recharts';
 import { Download, FileText, Table as TableIcon, Activity } from 'lucide-react';
 import Button from './ui/Button';
-import { Appointment, Client } from '../types';
+// Types removed - using plain objects
 import { monthKey, monthLabelRu, parseAppointmentDate } from '../utils/appointmentsStats';
 
 const COLORS = ['#f97316', '#ea580c', '#c2410c', '#fed7aa', '#fb923c', '#818cf8', '#0ea5e9'];

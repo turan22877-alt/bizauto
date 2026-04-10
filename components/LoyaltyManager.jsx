@@ -1,5 +1,5 @@
 import React from 'react';
-import { Client } from '../types';
+// Client type removed - using plain objects
 import { Gift, Award, Star } from 'lucide-react';
 import Button from './ui/Button';
 

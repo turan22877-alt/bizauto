@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { UserCheck, Calculator, Settings } from 'lucide-react';
-import { Staff, Appointment } from '../types';
+// Types removed - using plain objects
 import Button from './ui/Button';
 
 const PayrollCalculator = ({ staff, appointments }) => {

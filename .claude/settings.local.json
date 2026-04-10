@@ -3,7 +3,13 @@
     "allow": [
       "Bash(grep \"^D.*\\\\.tsx\\\\?$\")",
       "Bash(ls -la *.ts *.tsx)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(npm run:*)",
+      "Bash(find components:*)",
+      "Bash(grep -n \"import.*from.*types\" components/*.jsx App.jsx)",
+      "Bash(curl -s http://localhost:3002)",
+      "Bash(netstat -ano)"
     ]
   }
 }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { UserPlus, Briefcase, Trash2, ShieldCheck, X } from 'lucide-react';
-import { Staff } from '../types';
+// Staff type removed - using plain objects
 import Modal from './ui/Modal';
 import Button from './ui/Button';
 import ConfirmDialog from './ui/ConfirmDialog';

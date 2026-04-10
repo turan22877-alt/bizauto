@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { AppSection, Client, Staff, Appointment, Product, UserProfile, Currency } from './types';
+import { AppSection } from './types';
 import Sidebar from './components/Sidebar';
-import Header, { SearchNavigateDetail } from './components/Header';
+import Header from './components/Header';
 import Dashboard from './components/Dashboard';
 import BookingJournal from './components/BookingJournal';
 import ClientManagement from './components/ClientManagement';
@@ -13,7 +13,7 @@ import NotificationCenter from './components/NotificationCenter';
 import AnalyticsView from './components/AnalyticsView';
 import PayrollCalculator from './components/PayrollCalculator';
 import AuthScreen from './components/AuthScreen';
-import SettingsModal, { BackupPayload } from './components/SettingsModal';
+import SettingsModal from './components/SettingsModal';
 import Toast from './components/ui/Toast';
 import { getSession, logoutUser, updateUserProfile } from './utils/auth';
 import { migrateLegacyOwner, scopeByOwner } from './utils/migrate';

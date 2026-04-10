@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Appointment } from '../types';
+// Appointment type removed - using plain objects
 import { ArrowDownRight, ArrowUpRight, Activity, Wallet } from 'lucide-react';
 import { revenueInMonth } from '../utils/appointmentsStats';
 

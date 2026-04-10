@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Plus, Clock, User, Scissors, CalendarDays, Search, Filter, TrendingUp, DollarSign, Users, Calendar, CheckCircle2, XCircle, AlertCircle, GripVertical } from 'lucide-react';
-import { Appointment, Staff, Client } from '../types';
+// Types removed - using plain objects
 import Modal from './ui/Modal';
 import Button from './ui/Button';
 import ConfirmDialog from './ui/ConfirmDialog';

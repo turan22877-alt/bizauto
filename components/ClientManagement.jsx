@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Search, UserPlus, MoreVertical, Mail, Phone, Calendar, X, Trash2 } from 'lucide-react';
-import { Client } from '../types';
+// Client type removed - using plain objects
 import Modal from './ui/Modal';
 import Button from './ui/Button';
 import ConfirmDialog from './ui/ConfirmDialog';

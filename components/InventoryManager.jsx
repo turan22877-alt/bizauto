@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Product } from '../types';
+// Product type removed - using plain objects
 import { Package, Plus, Trash2, X } from 'lucide-react';
 import Modal from './ui/Modal';
 import Button from './ui/Button';
