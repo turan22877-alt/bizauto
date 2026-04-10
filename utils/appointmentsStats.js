@@ -1,4 +1,4 @@
-import { Appointment } from '../types';
+// Appointment type removed - using plain objects
 
 /** Parses YYYY-MM-DD or falls back to Date.parse */
 export function parseAppointmentDate(dateStr) {

@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { ToastType } from '../components/ui/Toast';
+// ToastType removed - using plain strings
 
 let toastId = 0;
 

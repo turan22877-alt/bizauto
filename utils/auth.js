@@ -1,4 +1,4 @@
-import { UserProfile, Currency, CURRENCY_SYMBOLS, CURRENCY_NAMES } from '../types';
+import { CURRENCY_SYMBOLS, CURRENCY_NAMES } from '../types';
 
 const USERS_KEY = 'b_users';
 const SESSION_KEY = 'b_session';
