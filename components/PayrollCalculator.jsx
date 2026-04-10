@@ -43,7 +43,7 @@ const PayrollCalculator = ({ staff, appointments }) => {
           <Calculator size={32} />
         </div>
         <h2 className="header-font text-2xl md:text-3xl font-black text-slate-800 mb-4">Расчёт по данным журнала</h2>
-        <p className="text-slate-600 max-w-md mx-auto font-medium mb-8 text-sm">
+        <p className="text-slate-600 max-w-2xl mx-auto font-medium mb-8 text-sm">
           Итог = оклад + (сумма подтверждённых услуг сотрудника × процент комиссии).
         </p>
         <div className="flex flex-wrap justify-center gap-4">
