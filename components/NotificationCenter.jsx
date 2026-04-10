@@ -64,9 +64,8 @@ const NotificationCenter = () => {
           <h4 className="header-font text-lg font-bold mb-4 text-slate-800">
             Ручная рассылка
           </h4>
-          <p className="text-sm text-slate-600 max-w-sm mb-8">
-            Отправьте мгновенное уведомление всем активным клиентам о
-            спецпредложении или изменении графика.
+          <p className="text-sm text-slate-600 mb-8 px-4">
+            Отправьте мгновенное уведомление всем активным клиентам о спецпредложении или изменении графика.
           </p>
           <Button variant="primary" className="px-10 py-4">
             Создать кампанию
