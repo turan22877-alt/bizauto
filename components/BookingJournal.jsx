@@ -17,12 +17,14 @@ import {
   XCircle,
   AlertCircle,
   GripVertical,
+  Bell,
 } from "lucide-react";
 // Types removed - using plain objects
 import Modal from "./ui/Modal";
 import Button from "./ui/Button";
 import ConfirmDialog from "./ui/ConfirmDialog";
 import { formatYMD, addDaysYMD, labelRuFromYMD } from "../utils/dateYmd";
+import { checkUpcomingAppointments } from "../utils/notifications";
 
 const BookingJournal = ({
   appointments,
@@ -32,6 +34,10 @@ const BookingJournal = ({
   ownerUid,
   focusRequest,
   onFocusConsumed,
+  services,
+  techCards,
+  inventory,
+  onUpdateInventory,
 }) => {
   const todayYmd = formatYMD(new Date());
   const [viewDate, setViewDate] = useState(todayYmd);
@@ -45,6 +51,20 @@ const BookingJournal = ({
   const [draggedAppointment, setDraggedAppointment] = useState(null);
   const [hoveredCard, setHoveredCard] = useState(null);
   const gridRef = useRef(null);
+  const [upcomingNotifications, setUpcomingNotifications] = useState([]);
+
+  // Проверка предстоящих записей каждую минуту
+  useEffect(() => {
+    const checkNotifications = () => {
+      const upcoming = checkUpcomingAppointments(appointments);
+      setUpcomingNotifications(upcoming);
+    };
+
+    checkNotifications();
+    const interval = setInterval(checkNotifications, 60000); // каждую минуту
+
+    return () => clearInterval(interval);
+  }, [appointments]);
 
   useEffect(() => {
     if (staff.length && !selectedStaffId) setSelectedStaffId(staff[0].id);
@@ -125,9 +145,32 @@ const BookingJournal = ({
         : viewMode === "month"
           ? monthDates
           : [viewDate];
-    let filtered = appointments.filter(
-      (a) => a.staffId === selectedStaffId && datesToShow.includes(a.date),
-    );
+
+    console.log("Filtering appointments:", {
+      total: appointments.length,
+      selectedStaffId,
+      datesToShow,
+      viewMode,
+      sampleAppointment: appointments[0]
+    });
+
+    let filtered = appointments.filter((a) => {
+      const staffMatch = a.staffId === selectedStaffId;
+      const dateMatch = datesToShow.includes(a.date);
+
+      if (!dateMatch && appointments.length > 0) {
+        console.log("Date mismatch:", {
+          appointmentDate: a.date,
+          datesToShow,
+          includes: datesToShow.includes(a.date)
+        });
+      }
+
+      return staffMatch && dateMatch;
+    });
+
+    console.log("Filtered appointments:", filtered.length);
+
     if (statusFilter !== "all")
       filtered = filtered.filter((a) => a.status === statusFilter);
     if (searchQuery) {
@@ -138,6 +181,9 @@ const BookingJournal = ({
           a.service.toLowerCase().includes(q),
       );
     }
+
+    console.log("Final filtered appointments:", filtered);
+
     return filtered;
   }, [
     appointments,
@@ -191,6 +237,7 @@ const BookingJournal = ({
       clientName: "",
       staffId: selectedStaffId,
       service: "",
+      serviceId: "",
       startTime: time || "10:00",
       date: date || viewDate,
       duration: 60,
@@ -204,6 +251,20 @@ const BookingJournal = ({
   const handleSave = (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    const serviceId = formData.get("serviceId");
+    const service = services?.find((s) => s.id === serviceId);
+    const manualService = formData.get("service");
+    const dateValue = formData.get("date");
+
+    console.log("Saving appointment:", {
+      serviceId,
+      service,
+      manualService,
+      dateValue,
+      viewDate,
+      todayYmd
+    });
+
     const newApp = {
       id: editingAppointment?.id || Math.random().toString(36).substr(2, 9),
       clientId: formData.get("clientId"),
@@ -211,20 +272,43 @@ const BookingJournal = ({
         clients.find((c) => c.id === formData.get("clientId"))?.name ||
         "Неизвестный клиент",
       staffId: selectedStaffId,
-      service: formData.get("service"),
+      service: service?.name || manualService || "Услуга",
+      serviceId: serviceId || "",
       startTime: formData.get("startTime"),
-      date: formData.get("date") || viewDate,
+      date: dateValue || viewDate,
       duration: parseInt(formData.get("duration"), 10),
       status: formData.get("status"),
       price: parseInt(formData.get("price"), 10),
       ownerUid,
     };
-    if (editingAppointment) {
-      onUpdateAppointments(
-        appointments.map((a) => (a.id === editingAppointment.id ? newApp : a)),
-      );
+
+    console.log("New appointment:", newApp);
+    console.log("Current appointments:", appointments.length);
+    console.log("Editing?", !!editingAppointment);
+
+    // Списание материалов по техкарте при подтверждении записи
+    if (newApp.status === "confirmed" && serviceId && techCards && inventory && onUpdateInventory) {
+      const techCard = techCards.find((tc) => tc.serviceId === serviceId);
+      if (techCard && techCard.materials.length > 0) {
+        const updatedInventory = inventory.map((item) => {
+          const material = techCard.materials.find((m) => m.inventoryId === item.id);
+          if (material) {
+            return { ...item, stock: Math.max(0, item.stock - material.quantity) };
+          }
+          return item;
+        });
+        onUpdateInventory(updatedInventory);
+      }
+    }
+
+    if (editingAppointment?.id) {
+      const updated = appointments.map((a) => (a.id === editingAppointment.id ? newApp : a));
+      console.log("Updating existing appointment, new count:", updated.length);
+      onUpdateAppointments(updated);
     } else {
-      onUpdateAppointments([...appointments, newApp]);
+      const updated = [...appointments, newApp];
+      console.log("Adding new appointment, new count:", updated.length);
+      onUpdateAppointments(updated);
     }
     setIsModalOpen(false);
     setEditingAppointment(null);
@@ -314,6 +398,35 @@ const BookingJournal = ({
 
   return (
     <div className="space-y-6">
+      {/* Уведомления о предстоящих записях */}
+      {upcomingNotifications.length > 0 && (
+        <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 animate-pulse">
+          <div className="flex items-start gap-3">
+            <Bell className="text-orange-600 shrink-0 mt-0.5" size={20} />
+            <div className="flex-1">
+              <h3 className="font-bold text-orange-800 mb-2">
+                Предстоящие записи ({upcomingNotifications.length})
+              </h3>
+              <div className="space-y-1">
+                {upcomingNotifications.map((app) => (
+                  <div
+                    key={app.id}
+                    className="text-sm text-orange-700 cursor-pointer hover:text-orange-900"
+                    onClick={() => {
+                      setEditingAppointment(app);
+                      setIsModalOpen(true);
+                    }}
+                  >
+                    <span className="font-semibold">{app.startTime}</span> -{" "}
+                    {app.clientName} - {app.service}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Top bar */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-3">
@@ -579,85 +692,96 @@ const BookingJournal = ({
               ))}
 
               {/* Appointments */}
-              {staffAppointments.map((app) => (
-                <div
-                  key={app.id}
-                  draggable
-                  onDragStart={() => handleDragStart(app)}
-                  onClick={() => {
-                    setEditingAppointment(app);
-                    setIsModalOpen(true);
-                  }}
-                  onMouseEnter={() => setHoveredCard(app.id)}
-                  onMouseLeave={() => setHoveredCard(null)}
-                  style={{
-                    top: `${getSlotPosition(app.startTime)}px`,
-                    height: `${(app.duration / 60) * 80}px`,
-                  }}
-                  className={`absolute left-2 right-2 md:left-3 md:right-3 p-3 rounded-lg border-l-[3px] shadow-sm cursor-pointer transition-all ${
-                    hoveredCard === app.id
-                      ? "scale-[1.02] shadow-md z-20"
-                      : "z-10"
-                  } ${statusColors[app.status]}`}
-                >
-                  <div className="flex items-start gap-2">
-                    <GripVertical
-                      size={12}
-                      className="opacity-30 shrink-0 mt-0.5"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex justify-between items-start gap-2">
-                        <span className="text-xs font-bold truncate">
-                          {app.clientName}
-                        </span>
-                        <span className="text-[10px] font-semibold opacity-60 shrink-0">
-                          {app.startTime}
-                        </span>
-                      </div>
-                      <p className="text-[10px] font-medium opacity-70 truncate">
-                        {app.service}
-                      </p>
-                      <div className="flex items-center justify-between mt-1">
-                        <span className="text-[10px] font-bold opacity-60">
-                          {app.price} ₽
-                        </span>
-                        <div className="flex items-center gap-1">
-                          <div
-                            className={`w-1.5 h-1.5 rounded-full ${statusDot[app.status]}`}
-                          />
-                          {statusIcon(app.status)}
+              {staffAppointments.map((app) => {
+                // Подсчитываем сколько записей на это же время
+                const sameTimeApps = staffAppointments.filter(a => a.startTime === app.startTime);
+                const columns = sameTimeApps.length;
+                const idx = sameTimeApps.findIndex(a => a.id === app.id);
+
+                return (
+                  <div
+                    key={app.id}
+                    draggable
+                    onDragStart={() => handleDragStart(app)}
+                    onClick={() => {
+                      setEditingAppointment(app);
+                      setIsModalOpen(true);
+                    }}
+                    onMouseEnter={() => setHoveredCard(app.id)}
+                    onMouseLeave={() => setHoveredCard(null)}
+                    style={{
+                      top: `${getSlotPosition(app.startTime)}px`,
+                      height: `${(app.duration / 60) * 80}px`,
+                      left: `calc(${(idx / columns) * 100}% + 0.5rem)`,
+                      width: `calc(${100 / columns}% - 1rem)`,
+                    }}
+                    className={`absolute z-10 transition-all ${
+                      hoveredCard === app.id ? "scale-[1.02] shadow-md z-20" : ""
+                    }`}
+                  >
+                    <div
+                      className={`h-full p-3 rounded-lg border-l-[3px] shadow-sm cursor-pointer ${statusColors[app.status]}`}
+                    >
+                      <div className="flex items-start gap-2">
+                        <GripVertical
+                          size={12}
+                          className="opacity-30 shrink-0 mt-0.5"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex justify-between items-start gap-2">
+                            <span className="text-xs font-bold truncate">
+                              {app.clientName}
+                            </span>
+                            <span className="text-[10px] font-semibold opacity-60 shrink-0">
+                              {app.startTime}
+                            </span>
+                          </div>
+                          <p className="text-[10px] font-medium opacity-70 truncate">
+                            {app.service}
+                          </p>
+                          <div className="flex items-center justify-between mt-1">
+                            <span className="text-[10px] font-bold opacity-60">
+                              {app.price} ₽
+                            </span>
+                            <div className="flex items-center gap-1">
+                              <div
+                                className={`w-1.5 h-1.5 rounded-full ${statusDot[app.status]}`}
+                              />
+                              {statusIcon(app.status)}
+                            </div>
+                          </div>
                         </div>
                       </div>
+
+                      {/* Quick actions */}
+                      {hoveredCard === app.id && (
+                        <div className="absolute -right-1 top-1/2 -translate-y-1/2 flex flex-col gap-1 z-30">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleQuickStatus(app.id, "confirmed");
+                            }}
+                            className="w-7 h-7 bg-orange-500 hover:bg-orange-600 rounded-md flex items-center justify-center text-white shadow transition-colors"
+                            title="Подтвердить"
+                          >
+                            <CheckCircle2 size={12} />
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleQuickStatus(app.id, "cancelled");
+                            }}
+                            className="w-7 h-7 bg-red-500 hover:bg-red-600 rounded-md flex items-center justify-center text-white shadow transition-colors"
+                            title="Отменить"
+                          >
+                            <XCircle size={12} />
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
-
-                  {/* Quick actions */}
-                  {hoveredCard === app.id && (
-                    <div className="absolute -right-1 top-1/2 -translate-y-1/2 flex flex-col gap-1 z-30">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleQuickStatus(app.id, "confirmed");
-                        }}
-                        className="w-7 h-7 bg-orange-500 hover:bg-orange-600 rounded-md flex items-center justify-center text-white shadow transition-colors"
-                        title="Подтвердить"
-                      >
-                        <CheckCircle2 size={12} />
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleQuickStatus(app.id, "cancelled");
-                        }}
-                        className="w-7 h-7 bg-red-500 hover:bg-red-600 rounded-md flex items-center justify-center text-white shadow transition-colors"
-                        title="Отменить"
-                      >
-                        <XCircle size={12} />
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         ) : viewMode === "month" ? (
@@ -828,6 +952,9 @@ const BookingJournal = ({
         <form
           key={isModalOpen ? "open" : "closed"}
           onSubmit={handleSave}
+          onInvalid={(e) => {
+            console.log("Form validation failed:", e.target);
+          }}
           className="space-y-5"
         >
           <div>
@@ -839,7 +966,6 @@ const BookingJournal = ({
               type="date"
               defaultValue={editingAppointment?.date || viewDate}
               className="w-full px-4 py-3 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
-              required
             />
           </div>
 
@@ -856,7 +982,6 @@ const BookingJournal = ({
                 name="clientId"
                 defaultValue={editingAppointment?.clientId || ""}
                 className="w-full pl-10 pr-4 py-3 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100 appearance-none"
-                required
               >
                 <option value="" disabled>
                   Выберите клиента
@@ -885,7 +1010,6 @@ const BookingJournal = ({
                   type="time"
                   defaultValue={editingAppointment?.startTime || "10:00"}
                   className="w-full pl-10 pr-4 py-3 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
-                  required
                 />
               </div>
             </div>
@@ -900,7 +1024,6 @@ const BookingJournal = ({
                 step={15}
                 defaultValue={editingAppointment?.duration || 60}
                 className="w-full px-4 py-3 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
-                required
               />
             </div>
           </div>
@@ -909,20 +1032,48 @@ const BookingJournal = ({
             <label className="block text-xs font-semibold text-stone-600 mb-1.5">
               Услуга
             </label>
-            <div className="relative">
-              <Scissors
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400"
-                size={16}
-              />
+            {services && services.length > 0 ? (
+              <div className="space-y-2">
+                <select
+                  name="serviceId"
+                  defaultValue={editingAppointment?.serviceId || ""}
+                  onChange={(e) => {
+                    const service = services.find((s) => s.id === e.target.value);
+                    if (service) {
+                      const priceInput = e.target.form.querySelector('input[name="price"]');
+                      const durationInput = e.target.form.querySelector('input[name="duration"]');
+                      const serviceInput = e.target.form.querySelector('input[name="service"]');
+                      if (priceInput) priceInput.value = service.price;
+                      if (durationInput) durationInput.value = service.duration;
+                      if (serviceInput) serviceInput.value = service.name;
+                    }
+                  }}
+                  className="w-full px-4 py-3 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100 appearance-none"
+                >
+                  <option value="">Выберите услугу</option>
+                  {services.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.name} - {s.price} ₽ ({s.duration} мин)
+                    </option>
+                  ))}
+                </select>
+                <input
+                  name="service"
+                  type="text"
+                  defaultValue={editingAppointment?.service || ""}
+                  placeholder="Или введите название вручную"
+                  className="w-full px-4 py-3 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100 placeholder:text-stone-400"
+                />
+              </div>
+            ) : (
               <input
                 name="service"
                 type="text"
                 defaultValue={editingAppointment?.service || ""}
                 placeholder="Например: Стрижка"
-                className="w-full pl-10 pr-4 py-3 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100 placeholder:text-stone-400"
-                required
+                className="w-full px-4 py-3 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100 placeholder:text-stone-400"
               />
-            </div>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -936,7 +1087,6 @@ const BookingJournal = ({
                 min={0}
                 defaultValue={editingAppointment?.price || 0}
                 className="w-full px-4 py-3 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
-                required
               />
             </div>
             <div>

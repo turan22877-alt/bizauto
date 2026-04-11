@@ -10,7 +10,8 @@
       "Bash(grep -n \"import.*from.*types\" components/*.jsx App.jsx)",
       "Bash(curl -s http://localhost:3002)",
       "Bash(netstat -ano)",
-      "Bash(npx prettier:*)"
+      "Bash(npx prettier:*)",
+      "Bash(curl -s http://localhost:3000)"
     ]
   }
 }

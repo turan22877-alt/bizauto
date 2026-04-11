@@ -7,6 +7,8 @@ import BookingJournal from "./components/BookingJournal";
 import ClientManagement from "./components/ClientManagement";
 import StaffManagement from "./components/StaffManagement";
 import InventoryManager from "./components/InventoryManager";
+import ServicesManager from "./components/ServicesManager";
+import TechCardsManager from "./components/TechCardsManager";
 import FinancialStats from "./components/FinancialStats";
 import LoyaltyManager from "./components/LoyaltyManager";
 import NotificationCenter from "./components/NotificationCenter";
@@ -40,6 +42,12 @@ const App = () => {
   const [inventoryAll, setInventoryAll] = useState(() =>
     loadFromStorage("b_inventory", []),
   );
+  const [servicesAll, setServicesAll] = useState(() =>
+    loadFromStorage("b_services", []),
+  );
+  const [techCardsAll, setTechCardsAll] = useState(() =>
+    loadFromStorage("b_techcards", []),
+  );
 
   const ownerUid = user?.uid ?? "";
 
@@ -58,6 +66,14 @@ const App = () => {
   const inventory = useMemo(
     () => scopeByOwner(inventoryAll, ownerUid),
     [inventoryAll, ownerUid],
+  );
+  const services = useMemo(
+    () => scopeByOwner(servicesAll, ownerUid),
+    [servicesAll, ownerUid],
+  );
+  const techCards = useMemo(
+    () => scopeByOwner(techCardsAll, ownerUid),
+    [techCardsAll, ownerUid],
   );
 
   const setClients = useCallback(
@@ -116,6 +132,34 @@ const App = () => {
     [ownerUid],
   );
 
+  const setServices = useCallback(
+    (updater) => {
+      setServicesAll((prev) => {
+        const rest = prev.filter((s) => s.ownerUid !== ownerUid);
+        const next =
+          typeof updater === "function"
+            ? updater(scopeByOwner(prev, ownerUid))
+            : updater;
+        return [...rest, ...next];
+      });
+    },
+    [ownerUid],
+  );
+
+  const setTechCards = useCallback(
+    (updater) => {
+      setTechCardsAll((prev) => {
+        const rest = prev.filter((t) => t.ownerUid !== ownerUid);
+        const next =
+          typeof updater === "function"
+            ? updater(scopeByOwner(prev, ownerUid))
+            : updater;
+        return [...rest, ...next];
+      });
+    },
+    [ownerUid],
+  );
+
   useEffect(() => debouncedSave("b_clients", clientsAll), [clientsAll]);
   useEffect(() => debouncedSave("b_staff", staffAll), [staffAll]);
   useEffect(
@@ -123,6 +167,8 @@ const App = () => {
     [appointmentsAll],
   );
   useEffect(() => debouncedSave("b_inventory", inventoryAll), [inventoryAll]);
+  useEffect(() => debouncedSave("b_services", servicesAll), [servicesAll]);
+  useEffect(() => debouncedSave("b_techcards", techCardsAll), [techCardsAll]);
 
   // Flush all pending saves before page unload
   useEffect(() => {
@@ -138,6 +184,8 @@ const App = () => {
       setStaffAll((s) => migrateLegacyOwner(s, profile.uid));
       setAppointmentsAll((a) => migrateLegacyOwner(a, profile.uid));
       setInventoryAll((i) => migrateLegacyOwner(i, profile.uid));
+      setServicesAll((s) => migrateLegacyOwner(s, profile.uid));
+      setTechCardsAll((t) => migrateLegacyOwner(t, profile.uid));
     }
   };
 
@@ -168,8 +216,10 @@ const App = () => {
       staff: scopeByOwner(staffAll, ownerUid),
       appointments: scopeByOwner(appointmentsAll, ownerUid),
       inventory: scopeByOwner(inventoryAll, ownerUid),
+      services: scopeByOwner(servicesAll, ownerUid),
+      techCards: scopeByOwner(techCardsAll, ownerUid),
     };
-  }, [ownerUid, clientsAll, staffAll, appointmentsAll, inventoryAll]);
+  }, [ownerUid, clientsAll, staffAll, appointmentsAll, inventoryAll, servicesAll, techCardsAll]);
 
   const handleImportBackup = useCallback(
     (payload) => {
@@ -191,6 +241,14 @@ const App = () => {
         setInventoryAll((prev) => [
           ...prev.filter((i) => i.ownerUid !== uid),
           ...payload.inventory,
+        ]);
+        setServicesAll((prev) => [
+          ...prev.filter((s) => s.ownerUid !== uid),
+          ...(payload.services || []),
+        ]);
+        setTechCardsAll((prev) => [
+          ...prev.filter((t) => t.ownerUid !== uid),
+          ...(payload.techCards || []),
         ]);
         success("Резервная копия успешно импортирована");
       } catch (err) {
@@ -242,6 +300,10 @@ const App = () => {
             ownerUid={ownerUid}
             focusRequest={focusRequest}
             onFocusConsumed={onFocusConsumed}
+            services={services}
+            techCards={techCards}
+            inventory={inventory}
+            onUpdateInventory={setInventory}
           />
         );
       case AppSection.CLIENTS:
@@ -268,6 +330,24 @@ const App = () => {
             ownerUid={ownerUid}
           />
         );
+      case AppSection.SERVICES:
+        return (
+          <ServicesManager
+            services={services}
+            onUpdateServices={setServices}
+            ownerUid={ownerUid}
+          />
+        );
+      case AppSection.TECH_CARDS:
+        return (
+          <TechCardsManager
+            techCards={techCards}
+            services={services}
+            inventory={inventory}
+            onUpdateTechCards={setTechCards}
+            ownerUid={ownerUid}
+          />
+        );
       case AppSection.FINANCE:
         return <FinancialStats appointments={appointments} />;
       case AppSection.LOYALTY:
@@ -277,7 +357,7 @@ const App = () => {
       case AppSection.NOTIFICATIONS:
         return <NotificationCenter />;
       case AppSection.ANALYTICS:
-        return <AnalyticsView appointments={appointments} clients={clients} />;
+        return <AnalyticsView appointments={appointments} clients={clients} staff={staff} inventory={inventory} />;
       case AppSection.PAYROLL:
         return <PayrollCalculator staff={staff} appointments={appointments} />;
       default:

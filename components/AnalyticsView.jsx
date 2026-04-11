@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -10,8 +10,11 @@ import {
   LineChart,
   Line,
   Cell,
+  PieChart,
+  Pie,
+  Legend,
 } from "recharts";
-import { Download, FileText, Table as TableIcon, Activity } from "lucide-react";
+import { Download, FileText, Table as TableIcon, Activity, Users as UsersIcon, TrendingUp, Package } from "lucide-react";
 import Button from "./ui/Button";
 // Types removed - using plain objects
 import {
@@ -28,6 +31,9 @@ const COLORS = [
   "#fb923c",
   "#818cf8",
   "#0ea5e9",
+  "#10b981",
+  "#8b5cf6",
+  "#ec4899",
 ];
 
 function buildLast12Months() {
@@ -41,7 +47,7 @@ function buildLast12Months() {
   return out;
 }
 
-const AnalyticsView = ({ appointments, clients }) => {
+const AnalyticsView = ({ appointments, clients, staff, inventory }) => {
   const barData = useMemo(() => {
     const confirmed = appointments.filter((a) => a.status === "confirmed");
     const revenueByKey = new Map();
@@ -75,6 +81,69 @@ const AnalyticsView = ({ appointments, clients }) => {
 
   const hasAnyBar = barData.some((d) => d.value > 0);
   const hasAnyLine = lineData.some((d) => d.value > 0);
+
+  // Продажи по сотрудникам
+  const staffSalesData = useMemo(() => {
+    const confirmed = appointments.filter((a) => a.status === "confirmed");
+    const salesByStaff = new Map();
+
+    for (const a of confirmed) {
+      const staffId = a.staffId;
+      const staffMember = staff?.find((s) => s.id === staffId);
+      const staffName = staffMember?.name || "Неизвестный";
+
+      if (!salesByStaff.has(staffName)) {
+        salesByStaff.set(staffName, { name: staffName, revenue: 0, count: 0 });
+      }
+
+      const current = salesByStaff.get(staffName);
+      current.revenue += a.price || 0;
+      current.count += 1;
+    }
+
+    return Array.from(salesByStaff.values()).sort((a, b) => b.revenue - a.revenue);
+  }, [appointments, staff]);
+
+  // История клиентов (что оказано/куплено)
+  const clientHistory = useMemo(() => {
+    const history = new Map();
+
+    appointments.forEach((app) => {
+      if (!history.has(app.clientId)) {
+        const client = clients.find((c) => c.id === app.clientId);
+        history.set(app.clientId, {
+          clientName: client?.name || app.clientName,
+          services: [],
+          totalSpent: 0,
+          visits: 0,
+        });
+      }
+
+      const record = history.get(app.clientId);
+      if (app.status === "confirmed") {
+        record.services.push({
+          service: app.service,
+          date: app.date,
+          price: app.price,
+        });
+        record.totalSpent += app.price || 0;
+        record.visits += 1;
+      }
+    });
+
+    return Array.from(history.values()).sort((a, b) => b.totalSpent - a.totalSpent);
+  }, [appointments, clients]);
+
+  // Продажи товаров (из инвентаря, если есть прямые продажи)
+  const inventorySalesData = useMemo(() => {
+    // Здесь можно добавить логику прямых продаж товаров
+    // Пока показываем текущий остаток
+    return inventory?.map((item) => ({
+      name: item.name,
+      stock: item.stock,
+      value: item.stock * item.price,
+    })) || [];
+  }, [inventory]);
 
   const downloadCsv = useCallback((filename, rows) => {
     if (!rows.length) return;
@@ -124,6 +193,32 @@ const AnalyticsView = ({ appointments, clients }) => {
         Статус: c.status,
       })),
     );
+  };
+
+  const exportStaffSalesCsv = () => {
+    downloadCsv(
+      "bizauto-prodazhi-sotrudnikov.csv",
+      staffSalesData.map((s) => ({
+        Сотрудник: s.name,
+        Записей: s.count,
+        Выручка_RUB: s.revenue,
+      })),
+    );
+  };
+
+  const exportClientHistoryCsv = () => {
+    const rows = [];
+    clientHistory.forEach((client) => {
+      client.services.forEach((service) => {
+        rows.push({
+          Клиент: client.clientName,
+          Услуга: service.service,
+          Дата: service.date,
+          Стоимость_RUB: service.price,
+        });
+      });
+    });
+    downloadCsv("bizauto-istoriya-klientov.csv", rows);
   };
 
   return (
@@ -265,6 +360,104 @@ const AnalyticsView = ({ appointments, clients }) => {
         </div>
       </div>
 
+      {/* Продажи по сотрудникам */}
+      {staffSalesData.length > 0 && (
+        <div className="glass-panel p-8 md:p-10 rounded-[2rem] border border-slate-200">
+          <h3 className="header-font text-lg font-bold text-slate-800 mb-6 flex items-center gap-3">
+            <UsersIcon className="text-orange-600" /> Продажи по сотрудникам
+          </h3>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-slate-200">
+                  <th className="text-left py-3 px-4 text-xs font-bold text-slate-600">Сотрудник</th>
+                  <th className="text-right py-3 px-4 text-xs font-bold text-slate-600">Записей</th>
+                  <th className="text-right py-3 px-4 text-xs font-bold text-slate-600">Выручка</th>
+                </tr>
+              </thead>
+              <tbody>
+                {staffSalesData.map((item, idx) => (
+                  <tr key={idx} className="border-b border-slate-100 hover:bg-orange-50">
+                    <td className="py-3 px-4 font-semibold text-slate-800">{item.name}</td>
+                    <td className="py-3 px-4 text-right text-slate-600">{item.count}</td>
+                    <td className="py-3 px-4 text-right font-bold text-orange-600">
+                      {item.revenue.toLocaleString()} ₽
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* История клиентов */}
+      {clientHistory.length > 0 && (
+        <div className="glass-panel p-8 md:p-10 rounded-[2rem] border border-slate-200">
+          <h3 className="header-font text-lg font-bold text-slate-800 mb-6 flex items-center gap-3">
+            <TrendingUp className="text-orange-600" /> История клиентов
+          </h3>
+          <div className="space-y-4 max-h-[600px] overflow-y-auto custom-scrollbar">
+            {clientHistory.slice(0, 20).map((client, idx) => (
+              <div key={idx} className="border border-slate-200 rounded-xl p-4 hover:bg-orange-50 transition-colors">
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <h4 className="font-bold text-slate-800">{client.clientName}</h4>
+                    <p className="text-xs text-slate-500">
+                      Визитов: {client.visits} | Потрачено: {client.totalSpent.toLocaleString()} ₽
+                    </p>
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  {client.services.slice(0, 5).map((service, sIdx) => (
+                    <div key={sIdx} className="text-xs text-slate-600 flex justify-between">
+                      <span>{service.service}</span>
+                      <span className="text-slate-400">{service.date} - {service.price} ₽</span>
+                    </div>
+                  ))}
+                  {client.services.length > 5 && (
+                    <p className="text-xs text-slate-400 italic">
+                      +{client.services.length - 5} ещё
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Остатки товаров */}
+      {inventorySalesData.length > 0 && (
+        <div className="glass-panel p-8 md:p-10 rounded-[2rem] border border-slate-200">
+          <h3 className="header-font text-lg font-bold text-slate-800 mb-6 flex items-center gap-3">
+            <Package className="text-orange-600" /> Остатки на складе
+          </h3>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-slate-200">
+                  <th className="text-left py-3 px-4 text-xs font-bold text-slate-600">Товар</th>
+                  <th className="text-right py-3 px-4 text-xs font-bold text-slate-600">Остаток</th>
+                  <th className="text-right py-3 px-4 text-xs font-bold text-slate-600">Стоимость</th>
+                </tr>
+              </thead>
+              <tbody>
+                {inventorySalesData.map((item, idx) => (
+                  <tr key={idx} className="border-b border-slate-100 hover:bg-orange-50">
+                    <td className="py-3 px-4 font-semibold text-slate-800">{item.name}</td>
+                    <td className="py-3 px-4 text-right text-slate-600">{item.stock}</td>
+                    <td className="py-3 px-4 text-right font-bold text-slate-700">
+                      {item.value.toLocaleString()} ₽
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
       <div className="glass-panel p-10 md:p-12 rounded-[2.5rem] border border-slate-200 text-center relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-orange-500/50 to-transparent" />
         <h3 className="header-font text-2xl md:text-3xl font-black text-slate-800 mb-3 tracking-tight">
@@ -291,6 +484,24 @@ const AnalyticsView = ({ appointments, clients }) => {
             onClick={exportClientsCsv}
           >
             CSV клиенты
+          </Button>
+          <Button
+            variant="secondary"
+            icon={<Download size={18} />}
+            className="px-8"
+            type="button"
+            onClick={exportStaffSalesCsv}
+          >
+            CSV продажи сотрудников
+          </Button>
+          <Button
+            variant="secondary"
+            icon={<Download size={18} />}
+            className="px-8"
+            type="button"
+            onClick={exportClientHistoryCsv}
+          >
+            CSV история клиентов
           </Button>
         </div>
       </div>

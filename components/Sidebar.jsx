@@ -16,6 +16,8 @@ import {
   Shield,
   TrendingUp,
   X,
+  Scissors,
+  FileText,
 } from "lucide-react";
 import { AppSection } from "../types";
 
@@ -91,6 +93,8 @@ const Sidebar = ({
       items: [
         { id: AppSection.CLIENTS, label: "Клиенты", icon: Users },
         { id: AppSection.STAFF, label: "Команда", icon: UserCog },
+        { id: AppSection.SERVICES, label: "Услуги", icon: Scissors },
+        { id: AppSection.TECH_CARDS, label: "Техкарты", icon: FileText },
         { id: AppSection.INVENTORY, label: "Склад", icon: Package },
         { id: AppSection.LOYALTY, label: "Лояльность", icon: Gift },
       ],
