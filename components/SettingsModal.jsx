@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Download, Upload, X, User, Building, Coins, Save } from "lucide-react";
+import { Download, Upload, X, User, Building, Coins, Save, Lock, Eye, EyeOff } from "lucide-react";
 import Modal from "./ui/Modal";
 import Button from "./ui/Button";
 import { CURRENCY_NAMES } from "../types";
@@ -11,6 +11,7 @@ const SettingsModal = ({
   onSaveProfile,
   onImportBackup,
   buildBackup,
+  onChangePassword,
 }) => {
   const [displayName, setDisplayName] = useState(user.displayName);
   const [businessName, setBusinessName] = useState(user.businessName || "");
@@ -19,6 +20,16 @@ const SettingsModal = ({
   const [saved, setSaved] = useState(false);
   const fileRef = useRef(null);
 
+  // Password change states
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordSuccess, setPasswordSuccess] = useState("");
+  const [changingPassword, setChangingPassword] = useState(false);
+
   useEffect(() => {
     if (isOpen) {
       setDisplayName(user.displayName);
@@ -26,6 +37,14 @@ const SettingsModal = ({
       setCurrency(user.currency || "RUB");
       setImportError("");
       setSaved(false);
+      // Reset password fields
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setPasswordError("");
+      setPasswordSuccess("");
+      setShowCurrentPassword(false);
+      setShowNewPassword(false);
     }
   }, [isOpen, user]);
 
@@ -75,6 +94,42 @@ const SettingsModal = ({
     onSaveProfile({ displayName, businessName, currency });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+  };
+
+  const handlePasswordChange = async () => {
+    setPasswordError("");
+    setPasswordSuccess("");
+
+    if (!currentPassword) {
+      setPasswordError("Введите текущий пароль");
+      return;
+    }
+    if (!newPassword || newPassword.length < 8) {
+      setPasswordError("Новый пароль должен содержать минимум 8 символов");
+      return;
+    }
+    if (!/[A-Z]/.test(newPassword) || !/[a-z]/.test(newPassword) || !/[0-9]/.test(newPassword)) {
+      setPasswordError("Пароль должен содержать заглавную, строчную букву и цифру");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError("Пароли не совпадают");
+      return;
+    }
+
+    setChangingPassword(true);
+    const result = await onChangePassword(currentPassword, newPassword);
+    setChangingPassword(false);
+
+    if (result.ok) {
+      setPasswordSuccess("Пароль успешно изменен");
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setTimeout(() => setPasswordSuccess(""), 3000);
+    } else {
+      setPasswordError(result.error || "Ошибка при изменении пароля");
+    }
   };
 
   return (
@@ -155,6 +210,100 @@ const SettingsModal = ({
               icon={<Save size={16} />}
             >
               {saved ? "Сохранено!" : "Сохранить"}
+            </Button>
+          </div>
+        </div>
+
+        {/* Password Change Section */}
+        <div className="bg-stone-50 rounded-2xl p-6 border border-stone-200">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-10 h-10 bg-orange-600/10 rounded-xl flex items-center justify-center">
+              <Lock size={20} className="text-orange-600" />
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-stone-800">Безопасность</h4>
+              <p className="text-xs text-stone-500 mt-0.5">Изменение пароля</p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <label className="text-xs font-semibold text-stone-500 mb-1.5 block">
+                Текущий пароль
+              </label>
+              <div className="relative">
+                <input
+                  type={showCurrentPassword ? "text" : "password"}
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  className="input-field pr-10"
+                  placeholder="Введите текущий пароль"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
+                >
+                  {showCurrentPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-stone-500 mb-1.5 block">
+                Новый пароль
+              </label>
+              <div className="relative">
+                <input
+                  type={showNewPassword ? "text" : "password"}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="input-field pr-10"
+                  placeholder="Минимум 8 символов, заглавная, строчная, цифра"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
+                >
+                  {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-stone-500 mb-1.5 block">
+                Подтвердите новый пароль
+              </label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="input-field"
+                placeholder="Повторите новый пароль"
+              />
+            </div>
+
+            {passwordError && (
+              <p className="text-sm text-rose-500 bg-rose-50 border border-rose-200 rounded-xl px-4 py-3">
+                {passwordError}
+              </p>
+            )}
+
+            {passwordSuccess && (
+              <p className="text-sm text-emerald-600 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3">
+                {passwordSuccess}
+              </p>
+            )}
+
+            <Button
+              type="button"
+              variant="secondary"
+              className="w-full"
+              onClick={handlePasswordChange}
+              loading={changingPassword}
+            >
+              Изменить пароль
             </Button>
           </div>
         </div>

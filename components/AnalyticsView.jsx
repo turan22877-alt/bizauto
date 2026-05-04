@@ -47,7 +47,7 @@ function buildLast12Months() {
   return out;
 }
 
-const AnalyticsView = ({ appointments, clients, staff, inventory }) => {
+const AnalyticsView = ({ appointments, clients, staff, inventory, sales }) => {
   const barData = useMemo(() => {
     const confirmed = appointments.filter((a) => a.status === "confirmed");
     const revenueByKey = new Map();
@@ -134,16 +134,76 @@ const AnalyticsView = ({ appointments, clients, staff, inventory }) => {
     return Array.from(history.values()).sort((a, b) => b.totalSpent - a.totalSpent);
   }, [appointments, clients]);
 
-  // Продажи товаров (из инвентаря, если есть прямые продажи)
+  // Продажи товаров
   const inventorySalesData = useMemo(() => {
-    // Здесь можно добавить логику прямых продаж товаров
-    // Пока показываем текущий остаток
     return inventory?.map((item) => ({
       name: item.name,
       stock: item.stock,
       value: item.stock * item.price,
     })) || [];
   }, [inventory]);
+
+  // Данные продаж по месяцам
+  const allRevenueData = useMemo(() => {
+    const revenueByKey = new Map();
+    // Добавляем выручку из записей
+    for (const a of appointments.filter((a) => a.status === "confirmed")) {
+      const dt = parseAppointmentDate(a.date);
+      if (!dt) continue;
+      const key = monthKey(dt);
+      revenueByKey.set(key, (revenueByKey.get(key) || 0) + (a.price || 0));
+    }
+    // Добавляем выручку из продаж
+    for (const s of sales) {
+      const dt = new Date(s.date);
+      const key = monthKey(dt);
+      revenueByKey.set(key, (revenueByKey.get(key) || 0) + (s.total || 0));
+    }
+    return buildLast12Months().map(({ key, label }) => ({
+      name: label,
+      key,
+      appointments: 0,
+      sales: 0,
+      total: revenueByKey.get(key) || 0,
+    }));
+  }, [appointments, sales]);
+
+  // Продажи по сотрудникам (включая обычные продажи)
+  const allStaffSalesData = useMemo(() => {
+    const salesByStaff = new Map();
+
+    // Записи
+    const confirmed = appointments.filter((a) => a.status === "confirmed");
+    for (const a of confirmed) {
+      const staffId = a.staffId;
+      const staffMember = staff?.find((s) => s.id === staffId);
+      const staffName = staffMember?.name || "Неизвестный";
+
+      if (!salesByStaff.has(staffName)) {
+        salesByStaff.set(staffName, { name: staffName, revenue: 0, count: 0 });
+      }
+      const current = salesByStaff.get(staffName);
+      current.revenue += a.price || 0;
+      current.count += 1;
+    }
+
+    // Продажи
+    for (const s of sales) {
+      const staffId = s.staffId;
+      if (!staffId) continue;
+      const staffMember = staff?.find((st) => st.id === staffId);
+      const staffName = staffMember?.name || "Неизвестный";
+
+      if (!salesByStaff.has(staffName)) {
+        salesByStaff.set(staffName, { name: staffName, revenue: 0, count: 0 });
+      }
+      const current = salesByStaff.get(staffName);
+      current.revenue += s.total || 0;
+      current.count += 1;
+    }
+
+    return Array.from(salesByStaff.values()).sort((a, b) => b.revenue - a.revenue);
+  }, [appointments, staff, sales]);
 
   const downloadCsv = useCallback((filename, rows) => {
     if (!rows.length) return;

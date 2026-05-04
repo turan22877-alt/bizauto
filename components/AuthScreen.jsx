@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { LogIn, UserPlus, Building2, Mail, Lock, User } from "lucide-react";
+import { LogIn, UserPlus, Building2, Mail, Lock, User, ShieldAlert } from "lucide-react";
 import Button from "./ui/Button";
 import { loginUser, registerUser } from "../utils/auth";
 import AuthScene3D from "./three/AuthScene3D";
@@ -12,10 +12,12 @@ const AuthScreen = ({ onAuthed }) => {
   const [businessName, setBusinessName] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
 
   const submit = async (e) => {
     e.preventDefault();
     setError("");
+    setIsLocked(false);
     setLoading(true);
     try {
       if (mode === "register") {
@@ -34,6 +36,9 @@ const AuthScreen = ({ onAuthed }) => {
         const r = await loginUser(email, password);
         if (r.ok === false) {
           setError(r.error);
+          if (r.locked) {
+            setIsLocked(true);
+          }
           return;
         }
         onAuthed(r.profile, { isNew: false });
@@ -157,7 +162,19 @@ const AuthScreen = ({ onAuthed }) => {
               />
             </div>
 
-            {error && (
+            {isLocked && (
+              <div className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                <ShieldAlert size={20} className="text-amber-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-semibold text-amber-800">Аккаунт временно заблокирован</p>
+                  <p className="text-xs text-amber-600 mt-1">
+                    Повторите попытку через 15 минут.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {error && !isLocked && (
               <p className="text-sm text-rose-500 font-medium bg-rose-50 border border-rose-100 rounded-xl px-4 py-3">
                 {error}
               </p>

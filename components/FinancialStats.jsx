@@ -3,15 +3,20 @@ import React, { useMemo } from "react";
 import { ArrowDownRight, ArrowUpRight, Activity, Wallet } from "lucide-react";
 import { revenueInMonth } from "../utils/appointmentsStats";
 
-const FinancialStats = ({ appointments }) => {
+const FinancialStats = ({ appointments, sales = [] }) => {
   const confirmed = useMemo(
     () => appointments.filter((a) => a.status === "confirmed"),
     [appointments],
   );
-  const revenue = useMemo(
+  const appointmentsRevenue = useMemo(
     () => confirmed.reduce((s, a) => s + (a.price || 0), 0),
     [confirmed],
   );
+  const salesRevenue = useMemo(
+    () => sales.reduce((s, sale) => s + (sale.total || 0), 0),
+    [sales],
+  );
+  const revenue = appointmentsRevenue + salesRevenue;
   const pendingRevenue = useMemo(
     () =>
       appointments

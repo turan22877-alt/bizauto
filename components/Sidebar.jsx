@@ -18,6 +18,7 @@ import {
   X,
   Scissors,
   FileText,
+  ShoppingCart,
 } from "lucide-react";
 import { AppSection } from "../types";
 
@@ -104,6 +105,7 @@ const Sidebar = ({
       icon: TrendingUp,
       items: [
         { id: AppSection.FINANCE, label: "Финансы", icon: Wallet },
+        { id: AppSection.SALES, label: "Продажи", icon: ShoppingCart },
         { id: AppSection.ANALYTICS, label: "Аналитика", icon: BarChart },
         { id: AppSection.PAYROLL, label: "Зарплаты", icon: Layers },
         { id: AppSection.NOTIFICATIONS, label: "Центр связи", icon: Bell },

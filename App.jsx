@@ -14,10 +14,11 @@ import LoyaltyManager from "./components/LoyaltyManager";
 import NotificationCenter from "./components/NotificationCenter";
 import AnalyticsView from "./components/AnalyticsView";
 import PayrollCalculator from "./components/PayrollCalculator";
+import SalesManager from "./components/SalesManager";
 import AuthScreen from "./components/AuthScreen";
 import SettingsModal from "./components/SettingsModal";
 import Toast from "./components/ui/Toast";
-import { getSession, logoutUser, updateUserProfile } from "./utils/auth";
+import { getSession, logoutUser, updateUserProfile, initSessionCheck, changePassword } from "./utils/auth";
 import { migrateLegacyOwner, scopeByOwner } from "./utils/migrate";
 import { debouncedSave, loadFromStorage, flushAllSaves } from "./utils/storage";
 import { useToast } from "./hooks/useToast";
@@ -48,6 +49,9 @@ const App = () => {
   const [techCardsAll, setTechCardsAll] = useState(() =>
     loadFromStorage("b_techcards", []),
   );
+  const [salesAll, setSalesAll] = useState(() =>
+    loadFromStorage("b_sales", []),
+  );
 
   const ownerUid = user?.uid ?? "";
 
@@ -74,6 +78,10 @@ const App = () => {
   const techCards = useMemo(
     () => scopeByOwner(techCardsAll, ownerUid),
     [techCardsAll, ownerUid],
+  );
+  const sales = useMemo(
+    () => scopeByOwner(salesAll, ownerUid),
+    [salesAll, ownerUid],
   );
 
   const setClients = useCallback(
@@ -160,6 +168,20 @@ const App = () => {
     [ownerUid],
   );
 
+  const setSales = useCallback(
+    (updater) => {
+      setSalesAll((prev) => {
+        const rest = prev.filter((s) => s.ownerUid !== ownerUid);
+        const next =
+          typeof updater === "function"
+            ? updater(scopeByOwner(prev, ownerUid))
+            : updater;
+        return [...rest, ...next];
+      });
+    },
+    [ownerUid],
+  );
+
   useEffect(() => debouncedSave("b_clients", clientsAll), [clientsAll]);
   useEffect(() => debouncedSave("b_staff", staffAll), [staffAll]);
   useEffect(
@@ -169,6 +191,7 @@ const App = () => {
   useEffect(() => debouncedSave("b_inventory", inventoryAll), [inventoryAll]);
   useEffect(() => debouncedSave("b_services", servicesAll), [servicesAll]);
   useEffect(() => debouncedSave("b_techcards", techCardsAll), [techCardsAll]);
+  useEffect(() => debouncedSave("b_sales", salesAll), [salesAll]);
 
   // Flush all pending saves before page unload
   useEffect(() => {
@@ -176,6 +199,13 @@ const App = () => {
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, []);
+
+  // Session security check - validates session and auto-logout on expiry
+  useEffect(() => {
+    if (!user) return;
+    const cleanup = initSessionCheck();
+    return cleanup;
+  }, [user]);
 
   const handleAuthed = (profile, opts) => {
     setUser(profile);
@@ -186,6 +216,7 @@ const App = () => {
       setInventoryAll((i) => migrateLegacyOwner(i, profile.uid));
       setServicesAll((s) => migrateLegacyOwner(s, profile.uid));
       setTechCardsAll((t) => migrateLegacyOwner(t, profile.uid));
+      setSalesAll((s) => migrateLegacyOwner(s, profile.uid));
     }
   };
 
@@ -218,8 +249,9 @@ const App = () => {
       inventory: scopeByOwner(inventoryAll, ownerUid),
       services: scopeByOwner(servicesAll, ownerUid),
       techCards: scopeByOwner(techCardsAll, ownerUid),
+      sales: scopeByOwner(salesAll, ownerUid),
     };
-  }, [ownerUid, clientsAll, staffAll, appointmentsAll, inventoryAll, servicesAll, techCardsAll]);
+  }, [ownerUid, clientsAll, staffAll, appointmentsAll, inventoryAll, servicesAll, techCardsAll, salesAll]);
 
   const handleImportBackup = useCallback(
     (payload) => {
@@ -250,6 +282,10 @@ const App = () => {
           ...prev.filter((t) => t.ownerUid !== uid),
           ...(payload.techCards || []),
         ]);
+        setSalesAll((prev) => [
+          ...prev.filter((s) => s.ownerUid !== uid),
+          ...(payload.sales || []),
+        ]);
         success("Резервная копия успешно импортирована");
       } catch (err) {
         error("Ошибка при импорте резервной копии");
@@ -275,6 +311,26 @@ const App = () => {
       } catch (err) {
         error("Ошибка при обновлении профиля");
         console.error(err);
+      }
+    },
+    [user, success, error],
+  );
+
+  const handleChangePassword = useCallback(
+    async (currentPassword, newPassword) => {
+      if (!user) return { ok: false, error: "Не авторизован" };
+      try {
+        const result = await changePassword(user.uid, currentPassword, newPassword);
+        if (result.ok) {
+          success("Пароль успешно изменен");
+        } else {
+          error(result.error || "Ошибка при изменении пароля");
+        }
+        return result;
+      } catch (err) {
+        error("Ошибка при изменении пароля");
+        console.error(err);
+        return { ok: false, error: "Внутренняя ошибка" };
       }
     },
     [user, success, error],
@@ -312,6 +368,8 @@ const App = () => {
             clients={clients}
             onUpdateClients={setClients}
             ownerUid={ownerUid}
+            appointments={appointments}
+            sales={sales}
           />
         );
       case AppSection.STAFF:
@@ -349,7 +407,7 @@ const App = () => {
           />
         );
       case AppSection.FINANCE:
-        return <FinancialStats appointments={appointments} />;
+        return <FinancialStats appointments={appointments} sales={sales} />;
       case AppSection.LOYALTY:
         return (
           <LoyaltyManager clients={clients} onUpdateClients={setClients} />
@@ -357,9 +415,21 @@ const App = () => {
       case AppSection.NOTIFICATIONS:
         return <NotificationCenter />;
       case AppSection.ANALYTICS:
-        return <AnalyticsView appointments={appointments} clients={clients} staff={staff} inventory={inventory} />;
+        return <AnalyticsView appointments={appointments} clients={clients} staff={staff} inventory={inventory} sales={sales} />;
       case AppSection.PAYROLL:
-        return <PayrollCalculator staff={staff} appointments={appointments} />;
+        return <PayrollCalculator staff={staff} appointments={appointments} sales={sales} />;
+      case AppSection.SALES:
+        return (
+          <SalesManager
+            sales={sales}
+            onUpdateSales={setSales}
+            services={services}
+            inventory={inventory}
+            clients={clients}
+            staff={staff}
+            ownerUid={ownerUid}
+          />
+        );
       default:
         return (
           <div className="flex flex-col items-center justify-center h-full opacity-50">
@@ -408,6 +478,7 @@ const App = () => {
           onSaveProfile={handleSaveProfile}
           onImportBackup={handleImportBackup}
           buildBackup={buildBackup}
+          onChangePassword={handleChangePassword}
         />
       </div>
       {toasts.map((toast) => (

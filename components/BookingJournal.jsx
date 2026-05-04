@@ -235,6 +235,7 @@ const BookingJournal = ({
       id: "",
       clientId: "",
       clientName: "",
+      staffIds: [selectedStaffId],
       staffId: selectedStaffId,
       service: "",
       serviceId: "",
@@ -265,13 +266,17 @@ const BookingJournal = ({
       todayYmd
     });
 
+    const staffIds = Array.from(formData.getAll("staffIds") || []);
+    const finalStaffId = staffIds.length > 0 ? staffIds[0] : selectedStaffId;
+
     const newApp = {
       id: editingAppointment?.id || Math.random().toString(36).substr(2, 9),
       clientId: formData.get("clientId"),
       clientName:
         clients.find((c) => c.id === formData.get("clientId"))?.name ||
         "Неизвестный клиент",
-      staffId: selectedStaffId,
+      staffId: finalStaffId,
+      staffIds: staffIds.length > 0 ? staffIds : [selectedStaffId],
       service: service?.name || manualService || "Услуга",
       serviceId: serviceId || "",
       startTime: formData.get("startTime"),
@@ -739,6 +744,11 @@ const BookingJournal = ({
                           <p className="text-[10px] font-medium opacity-70 truncate">
                             {app.service}
                           </p>
+                          {app.staffIds && app.staffIds.length > 1 && (
+                            <p className="text-[9px] text-orange-600 font-semibold truncate mt-0.5">
+                              👥 {app.staffIds.length} сотрудника
+                            </p>
+                          )}
                           <div className="flex items-center justify-between mt-1">
                             <span className="text-[10px] font-bold opacity-60">
                               {app.price} ₽
@@ -920,6 +930,11 @@ const BookingJournal = ({
                           <p className="text-[10px] font-medium opacity-70 truncate">
                             {app.service}
                           </p>
+                          {app.staffIds && app.staffIds.length > 1 && (
+                            <p className="text-[9px] text-orange-600 font-semibold truncate mt-0.5">
+                              👥 {app.staffIds.length} сотрудника
+                            </p>
+                          )}
                           <div className="flex items-center justify-between mt-1">
                             <span className="text-[10px] font-bold opacity-60">
                               {app.price} ₽
@@ -992,6 +1007,54 @@ const BookingJournal = ({
                   </option>
                 ))}
               </select>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-stone-600 mb-1.5">
+              Сотрудники (можно выбрать нескольких)
+            </label>
+            <div className="space-y-2 max-h-32 overflow-y-auto bg-white border border-stone-200 rounded-lg p-3">
+              {staff.map((s) => (
+                <label key={s.id} className="flex items-center gap-2 cursor-pointer hover:bg-stone-50 p-2 rounded">
+                  <input
+                    type="checkbox"
+                    name="staffIds"
+                    value={s.id}
+                    defaultChecked={
+                      editingAppointment?.staffIds
+                        ? editingAppointment.staffIds.includes(s.id)
+                        : editingAppointment?.staffId === s.id
+                    }
+                    className="w-4 h-4 text-orange-600 rounded border-stone-300 focus:ring-orange-500"
+                  />
+                  <span className="text-sm text-stone-700">{s.name}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-stone-600 mb-1.5">
+              Сотрудники (можно выбрать нескольких)
+            </label>
+            <div className="space-y-2 max-h-32 overflow-y-auto bg-white border border-stone-200 rounded-lg p-3">
+              {staff.map((s) => (
+                <label key={s.id} className="flex items-center gap-2 cursor-pointer hover:bg-stone-50 p-2 rounded">
+                  <input
+                    type="checkbox"
+                    name="staffIds"
+                    value={s.id}
+                    defaultChecked={
+                      editingAppointment?.staffIds
+                        ? editingAppointment.staffIds.includes(s.id)
+                        : editingAppointment?.staffId === s.id
+                    }
+                    className="w-4 h-4 text-orange-600 rounded border-stone-300 focus:ring-orange-500"
+                  />
+                  <span className="text-sm text-stone-700">{s.name}</span>
+                </label>
+              ))}
             </div>
           </div>
 
